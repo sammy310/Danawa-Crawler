@@ -15,6 +15,7 @@ from scrapy.selector import Selector
 
 from selenium import webdriver
 import time
+import csv
 
 
 class computercrawler_Spider(scrapy.Spider):
@@ -23,6 +24,11 @@ class computercrawler_Spider(scrapy.Spider):
     
     def __init__(self):
         self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe")
+        file = open('ComputerCrawlerFile.csv','a', newline='')
+        csvWriter = csv.writer(file)
+        csvWriter.writerow(["---"])
+        csvWriter.writerow([time.strftime('%c', time.localtime(time.time()))])
+        file.close()
  
     #1번만 실행
     def start_requests(self):
