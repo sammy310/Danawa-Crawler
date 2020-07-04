@@ -18,13 +18,20 @@ import time
 import csv
 
 
+
 class cpu_Spider(scrapy.Spider):
     name = "cpucrawler"
     allowed_domains = ["www.danawa.com"]
     
+    chrome_option = webdriver.ChromeOptions()
+    chrome_option.add_argument('headless')
+    chrome_option.add_argument('--disable-gpu')
+    chrome_option.add_argument('lang=ko=KR')
+    
+    
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112747'
-        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe")
+        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "CPU"])
@@ -80,9 +87,14 @@ class ram_Spider(scrapy.Spider):
     name = "ramcrawler"
     allowed_domains = ["www.danawa.com"]
     
+    chrome_option = webdriver.ChromeOptions()
+    chrome_option.add_argument('headless')
+    chrome_option.add_argument('--disable-gpu')
+    chrome_option.add_argument('lang=ko=KR')
+    
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112752'
-        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe")
+        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "RAM"])
@@ -139,9 +151,14 @@ class vga_Spider(scrapy.Spider):
     name = "vgacrawler"
     allowed_domains = ["www.danawa.com"]
     
+    chrome_option = webdriver.ChromeOptions()
+    chrome_option.add_argument('headless')
+    chrome_option.add_argument('--disable-gpu')
+    chrome_option.add_argument('lang=ko=KR')
+    
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112753'
-        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe")
+        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "VGA"])
@@ -198,9 +215,14 @@ class mboard_Spider(scrapy.Spider):
     name = "mboardcrawler"
     allowed_domains = ["www.danawa.com"]
     
+    chrome_option = webdriver.ChromeOptions()
+    chrome_option.add_argument('headless')
+    chrome_option.add_argument('--disable-gpu')
+    chrome_option.add_argument('lang=ko=KR')
+    
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112751'
-        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe")
+        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "MBoard"])
@@ -257,9 +279,14 @@ class ssd_Spider(scrapy.Spider):
     name = "ssdcrawler"
     allowed_domains = ["www.danawa.com"]
     
+    chrome_option = webdriver.ChromeOptions()
+    chrome_option.add_argument('headless')
+    chrome_option.add_argument('--disable-gpu')
+    chrome_option.add_argument('lang=ko=KR')
+    
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112760'
-        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe")
+        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "SSD"])
@@ -334,9 +361,14 @@ class hdd_Spider(scrapy.Spider):
     name = "hddcrawler"
     allowed_domains = ["www.danawa.com"]
     
+    chrome_option = webdriver.ChromeOptions()
+    chrome_option.add_argument('headless')
+    chrome_option.add_argument('--disable-gpu')
+    chrome_option.add_argument('lang=ko=KR')
+    
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112763'
-        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe")
+        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "HDD"])
@@ -411,9 +443,14 @@ class power_Spider(scrapy.Spider):
     name = "powercrawler"
     allowed_domains = ["www.danawa.com"]
     
+    chrome_option = webdriver.ChromeOptions()
+    chrome_option.add_argument('headless')
+    chrome_option.add_argument('--disable-gpu')
+    chrome_option.add_argument('lang=ko=KR')
+    
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112777'
-        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe")
+        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "Power"])
@@ -470,9 +507,14 @@ class cooler_Spider(scrapy.Spider):
     name = "coolercrawler"
     allowed_domains = ["www.danawa.com"]
     
+    chrome_option = webdriver.ChromeOptions()
+    chrome_option.add_argument('headless')
+    chrome_option.add_argument('--disable-gpu')
+    chrome_option.add_argument('lang=ko=KR')
+    
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=11236855'
-        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe")
+        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "Cooler"])
@@ -529,9 +571,14 @@ class Case_Spider(scrapy.Spider):
     name = "casecrawler"
     allowed_domains = ["www.danawa.com"]
     
+    chrome_option = webdriver.ChromeOptions()
+    chrome_option.add_argument('headless')
+    chrome_option.add_argument('--disable-gpu')
+    chrome_option.add_argument('lang=ko=KR')
+    
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112775'
-        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe")
+        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "Case"])
