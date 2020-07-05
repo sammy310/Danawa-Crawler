@@ -8,7 +8,7 @@ Created on Sun Jul  5 09:49:21 2020
 import csv
 import os.path
 
-#csvList = {'CPU':'cpu_data.csv'}
+
 csvList = {'CPU':'cpu_data.csv', 'VGA':'vga_data.csv', 'MBoard':'mboard_data.csv', 'RAM':'ram_data.csv', 'SSD':'ssd_data.csv', 'HDD':'hdd_data.csv', 'Power':'power_data.csv', 'Cooler':'cooler_data.csv', 'Case':'case_data.csv'}
 dataPath = 'crawl_data/'
 
@@ -60,7 +60,14 @@ for key in csvList.keys():
         
             dataList.append(newDataList)
         
-    dataList.sort()
+    dataSize = len(dataList[0])
+    for data in dataList:
+        if len(data) < dataSize:
+            for i in range(len(data),dataSize):
+                data.append(0)
+        
+        
+    dataList.sort(key= lambda x: x[1])
     dataList.insert(0, dataList.pop())
         
     with open(dataFile, 'w', newline='', encoding='utf8') as file:

@@ -6,11 +6,8 @@ Created on Sat Jun 20 11:23:18 2020
 """
 
 import scrapy
-import sys
 from scrapy.spiders import Spider
-#from scrapy.selector import HtmlXPathSelector
 from computercrawler.items import ComputercrawlerItem
-from scrapy.http import Request
 from scrapy.selector import Selector
 
 from selenium import webdriver
@@ -114,33 +111,38 @@ class ram_Spider(scrapy.Spider):
         listSizeOption = self.browser.find_element_by_xpath('//option[@value="90"]')
         listSizeOption.click()
         
-        time.sleep(5)
-        
-        html = self.browser.find_element_by_xpath('//*[@id="productListArea"]/div[4]/ul').get_attribute('outerHTML')
-        selector = Selector(text=html)
-        
-        productIds = selector.xpath('//li[@class="prod_item prod_layer width_change"]/@id').getall()
-        productNames = selector.xpath('//a[@name="productName"]/text()').getall()
-        productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
-        
-        adCounter = 0
-        for i in range(len(productIds)) :
-            item = ComputercrawlerItem()
-            item['productId'] = productIds[i][11:]
-            item['productName'] = productNames[i].strip()
+        for i in range(10):
+            if i != 0:
+                movePageBT = self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i)
+                movePageBT.click()
             
-            bNotAd = False
-            while not bNotAd:
-                pList = productPriceList[i+adCounter].xpath('li')
-                if pList[0].xpath('@class').get() == "opt_item":
-                    adCounter += 1
-                    bNotAd = False
-                    continue
-                else:
-                    bNotAd = True
-                    
-            item['productPrice'] = pList[0].xpath('p[2]/a/strong/text()').get()
-            yield item
+            time.sleep(5)
+            
+            html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
+            selector = Selector(text=html)
+            
+            productIds = selector.xpath('//li[@class="prod_item prod_layer width_change"]/@id').getall()
+            productNames = selector.xpath('//a[@name="productName"]/text()').getall()
+            productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
+            
+            adCounter = 0
+            for i in range(len(productIds)) :
+                item = ComputercrawlerItem()
+                item['productId'] = productIds[i][11:]
+                item['productName'] = productNames[i].strip()
+                
+                bNotAd = False
+                while not bNotAd:
+                    pList = productPriceList[i+adCounter].xpath('li')
+                    if pList[0].xpath('@class').get() == "opt_item":
+                        adCounter += 1
+                        bNotAd = False
+                        continue
+                    else:
+                        bNotAd = True
+                        
+                item['productPrice'] = pList[0].xpath('p[2]/a/strong/text()').get()
+                yield item
             
         self.browser.close()
         
@@ -177,33 +179,38 @@ class vga_Spider(scrapy.Spider):
         listSizeOption = self.browser.find_element_by_xpath('//option[@value="90"]')
         listSizeOption.click()
         
-        time.sleep(5)
-        
-        html = self.browser.find_element_by_xpath('//*[@id="productListArea"]/div[4]/ul').get_attribute('outerHTML')
-        selector = Selector(text=html)
-        
-        productIds = selector.xpath('//li[@class="prod_item prod_layer width_change"]/@id').getall()
-        productNames = selector.xpath('//a[@name="productName"]/text()').getall()
-        productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
-        
-        adCounter = 0
-        for i in range(len(productIds)) :
-            item = ComputercrawlerItem()
-            item['productId'] = productIds[i][11:]
-            item['productName'] = productNames[i].strip()
+        for i in range(10):
+            if i != 0:
+                movePageBT = self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i)
+                movePageBT.click()
             
-            bNotAd = False
-            while not bNotAd:
-                pList = productPriceList[i+adCounter].xpath('li')
-                if pList[0].xpath('@class').get() == "opt_item":
-                    adCounter += 1
-                    bNotAd = False
-                    continue
-                else:
-                    bNotAd = True
-                    
-            item['productPrice'] = pList[0].xpath('p[2]/a/strong/text()').get()
-            yield item
+            time.sleep(5)
+        
+            html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
+            selector = Selector(text=html)
+            
+            productIds = selector.xpath('//li[@class="prod_item prod_layer width_change"]/@id').getall()
+            productNames = selector.xpath('//a[@name="productName"]/text()').getall()
+            productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
+            
+            adCounter = 0
+            for i in range(len(productIds)) :
+                item = ComputercrawlerItem()
+                item['productId'] = productIds[i][11:]
+                item['productName'] = productNames[i].strip()
+                
+                bNotAd = False
+                while not bNotAd:
+                    pList = productPriceList[i+adCounter].xpath('li')
+                    if pList[0].xpath('@class').get() == "opt_item":
+                        adCounter += 1
+                        bNotAd = False
+                        continue
+                    else:
+                        bNotAd = True
+                        
+                item['productPrice'] = pList[0].xpath('p[2]/a/strong/text()').get()
+                yield item
             
         self.browser.close()
 
@@ -240,33 +247,38 @@ class mboard_Spider(scrapy.Spider):
         listSizeOption = self.browser.find_element_by_xpath('//option[@value="90"]')
         listSizeOption.click()
         
-        time.sleep(5)
-        
-        html = self.browser.find_element_by_xpath('//*[@id="productListArea"]/div[4]/ul').get_attribute('outerHTML')
-        selector = Selector(text=html)
-        
-        productIds = selector.xpath('//li[@class="prod_item prod_layer width_change"]/@id').getall()
-        productNames = selector.xpath('//a[@name="productName"]/text()').getall()
-        productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
-        
-        adCounter = 0
-        for i in range(len(productIds)) :
-            item = ComputercrawlerItem()
-            item['productId'] = productIds[i][11:]
-            item['productName'] = productNames[i].strip()
+        for i in range(10):
+            if i != 0:
+                movePageBT = self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i)
+                movePageBT.click()
+                
+            time.sleep(5)
             
-            bNotAd = False
-            while not bNotAd:
-                pList = productPriceList[i+adCounter].xpath('li')
-                if pList[0].xpath('@class').get() == "opt_item":
-                    adCounter += 1
-                    bNotAd = False
-                    continue
-                else:
-                    bNotAd = True
-                    
-            item['productPrice'] = pList[0].xpath('p[2]/a/strong/text()').get()
-            yield item
+            html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
+            selector = Selector(text=html)
+            
+            productIds = selector.xpath('//li[@class="prod_item prod_layer width_change"]/@id').getall()
+            productNames = selector.xpath('//a[@name="productName"]/text()').getall()
+            productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
+            
+            adCounter = 0
+            for i in range(len(productIds)) :
+                item = ComputercrawlerItem()
+                item['productId'] = productIds[i][11:]
+                item['productName'] = productNames[i].strip()
+                
+                bNotAd = False
+                while not bNotAd:
+                    pList = productPriceList[i+adCounter].xpath('li')
+                    if pList[0].xpath('@class').get() == "opt_item":
+                        adCounter += 1
+                        bNotAd = False
+                        continue
+                    else:
+                        bNotAd = True
+                        
+                item['productPrice'] = pList[0].xpath('p[2]/a/strong/text()').get()
+                yield item
             
         self.browser.close()
 
@@ -303,51 +315,56 @@ class ssd_Spider(scrapy.Spider):
         listSizeOption = self.browser.find_element_by_xpath('//option[@value="90"]')
         listSizeOption.click()
         
-        time.sleep(5)
-        
-        html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
-        selector = Selector(text=html)
-        
-        productIds = selector.xpath('//li[@class="prod_item prod_layer "]/@id').getall()
-        productNames = selector.xpath('//a[@name="productName"]/text()').getall()
-        productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
-        
-        
-        adCounter = 0
-        for i in range(len(productIds)) :
-            item = ComputercrawlerItem()
-            item['productId'] = productIds[i][11:]
-            item['productName'] = productNames[i].strip()
+        for i in range(3):
+            if i != 0:
+                movePageBT = self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i)
+                movePageBT.click()
+                
+            time.sleep(5)
             
-            bNotAd = False
-            priceStr = ""
-            while not bNotAd:
-                pList = productPriceList[i+adCounter].xpath('li')
-                if pList[0].xpath('@class').get() == "opt_item":
-                    adCounter += 1
-                    bNotAd = False
-                    continue
-                else:
-                    bNotAd = True
+            html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
+            selector = Selector(text=html)
+            
+            productIds = selector.xpath('//li[@class="prod_item prod_layer "]/@id').getall()
+            productNames = selector.xpath('//a[@name="productName"]/text()').getall()
+            productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
+            
+            
+            adCounter = 0
+            for i in range(len(productIds)) :
+                item = ComputercrawlerItem()
+                item['productId'] = productIds[i][11:]
+                item['productName'] = productNames[i].strip()
                 
-                for j in range(len(pList)):
-                    for pStr in pList[j].xpath('div/p/text()').getall():
-                        if bool(pStr.strip()):
-                            priceStr += pStr.strip()
-                    priceStr += '_'
-                    if pList[j].xpath('div/p/a/span/text()').get():
-                        priceStr += pList[j].xpath('div/p/a/span/text()').get()
-                    elif pList[j].xpath('div/p/a/span/em/text()').get():
-                        priceStr += pList[j].xpath('div/p/a/span/em/text()').get()
+                bNotAd = False
+                priceStr = ""
+                while not bNotAd:
+                    pList = productPriceList[i+adCounter].xpath('li')
+                    if pList[0].xpath('@class').get() == "opt_item":
+                        adCounter += 1
+                        bNotAd = False
+                        continue
                     else:
-                        priceStr += "---"
-                    priceStr += '_'
-                    priceStr += pList[j].xpath('p[2]/a/strong/text()').get()
-                    priceStr += ' '
-                
-                
-            item['productPrice'] = priceStr
-            yield item
+                        bNotAd = True
+                    
+                    for j in range(len(pList)):
+                        for pStr in pList[j].xpath('div/p/text()').getall():
+                            if bool(pStr.strip()):
+                                priceStr += pStr.strip()
+                        priceStr += '_'
+                        if pList[j].xpath('div/p/a/span/text()').get():
+                            priceStr += pList[j].xpath('div/p/a/span/text()').get()
+                        elif pList[j].xpath('div/p/a/span/em/text()').get():
+                            priceStr += pList[j].xpath('div/p/a/span/em/text()').get()
+                        else:
+                            priceStr += "---"
+                        priceStr += '_'
+                        priceStr += pList[j].xpath('p[2]/a/strong/text()').get()
+                        priceStr += ' '
+                    
+                    
+                item['productPrice'] = priceStr
+                yield item
             
         self.browser.close()
 
@@ -384,51 +401,56 @@ class hdd_Spider(scrapy.Spider):
         listSizeOption = self.browser.find_element_by_xpath('//option[@value="90"]')
         listSizeOption.click()
         
-        time.sleep(5)
-        
-        html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
-        selector = Selector(text=html)
-        
-        productIds = selector.xpath('//li[@class="prod_item prod_layer "]/@id').getall()
-        productNames = selector.xpath('//a[@name="productName"]/text()').getall()
-        productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
-        
-        
-        adCounter = 0
-        for i in range(len(productIds)) :
-            item = ComputercrawlerItem()
-            item['productId'] = productIds[i][11:]
-            item['productName'] = productNames[i].strip()
+        for i in range(2):
+            if i != 0:
+                movePageBT = self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i)
+                movePageBT.click()
+                
+            time.sleep(5)
             
-            bNotAd = False
-            priceStr = ""
-            while not bNotAd:
-                pList = productPriceList[i+adCounter].xpath('li')
-                if pList[0].xpath('@class').get() == "opt_item":
-                    adCounter += 1
-                    bNotAd = False
-                    continue
-                else:
-                    bNotAd = True
+            html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
+            selector = Selector(text=html)
+            
+            productIds = selector.xpath('//li[@class="prod_item prod_layer "]/@id').getall()
+            productNames = selector.xpath('//a[@name="productName"]/text()').getall()
+            productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
+            
+            
+            adCounter = 0
+            for i in range(len(productIds)) :
+                item = ComputercrawlerItem()
+                item['productId'] = productIds[i][11:]
+                item['productName'] = productNames[i].strip()
                 
-                for j in range(len(pList)):
-                    for pStr in pList[j].xpath('div/p/text()').getall():
-                        if bool(pStr.strip()):
-                            priceStr += pStr.strip()
-                    priceStr += '_'
-                    if pList[j].xpath('div/p/a/span/text()').get():
-                        priceStr += pList[j].xpath('div/p/a/span/text()').get()
-                    elif pList[j].xpath('div/p/a/span/em/text()').get():
-                        priceStr += pList[j].xpath('div/p/a/span/em/text()').get()
+                bNotAd = False
+                priceStr = ""
+                while not bNotAd:
+                    pList = productPriceList[i+adCounter].xpath('li')
+                    if pList[0].xpath('@class').get() == "opt_item":
+                        adCounter += 1
+                        bNotAd = False
+                        continue
                     else:
-                        priceStr += "---"
-                    priceStr += '_'
-                    priceStr += pList[j].xpath('p[2]/a/strong/text()').get()
-                    priceStr += ' '
-                
-                
-            item['productPrice'] = priceStr
-            yield item
+                        bNotAd = True
+                    
+                    for j in range(len(pList)):
+                        for pStr in pList[j].xpath('div/p/text()').getall():
+                            if bool(pStr.strip()):
+                                priceStr += pStr.strip()
+                        priceStr += '_'
+                        if pList[j].xpath('div/p/a/span/text()').get():
+                            priceStr += pList[j].xpath('div/p/a/span/text()').get()
+                        elif pList[j].xpath('div/p/a/span/em/text()').get():
+                            priceStr += pList[j].xpath('div/p/a/span/em/text()').get()
+                        else:
+                            priceStr += "---"
+                        priceStr += '_'
+                        priceStr += pList[j].xpath('p[2]/a/strong/text()').get()
+                        priceStr += ' '
+                    
+                    
+                item['productPrice'] = priceStr
+                yield item
             
         self.browser.close()
 
@@ -465,33 +487,38 @@ class power_Spider(scrapy.Spider):
         listSizeOption = self.browser.find_element_by_xpath('//option[@value="90"]')
         listSizeOption.click()
         
-        time.sleep(5)
-        
-        html = self.browser.find_element_by_xpath('//*[@id="productListArea"]/div[4]/ul').get_attribute('outerHTML')
-        selector = Selector(text=html)
-        
-        productIds = selector.xpath('//li[@class="prod_item prod_layer width_change"]/@id').getall()
-        productNames = selector.xpath('//a[@name="productName"]/text()').getall()
-        productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
-        
-        adCounter = 0
-        for i in range(len(productIds)) :
-            item = ComputercrawlerItem()
-            item['productId'] = productIds[i][11:]
-            item['productName'] = productNames[i].strip()
+        for i in range(5):
+            if i != 0:
+                movePageBT = self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i)
+                movePageBT.click()
+                
+            time.sleep(5)
             
-            bNotAd = False
-            while not bNotAd:
-                pList = productPriceList[i+adCounter].xpath('li')
-                if pList[0].xpath('@class').get() == "opt_item":
-                    adCounter += 1
-                    bNotAd = False
-                    continue
-                else:
-                    bNotAd = True
-                    
-            item['productPrice'] = pList[0].xpath('p[2]/a/strong/text()').get()
-            yield item
+            html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
+            selector = Selector(text=html)
+            
+            productIds = selector.xpath('//li[@class="prod_item prod_layer width_change"]/@id').getall()
+            productNames = selector.xpath('//a[@name="productName"]/text()').getall()
+            productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
+            
+            adCounter = 0
+            for i in range(len(productIds)) :
+                item = ComputercrawlerItem()
+                item['productId'] = productIds[i][11:]
+                item['productName'] = productNames[i].strip()
+                
+                bNotAd = False
+                while not bNotAd:
+                    pList = productPriceList[i+adCounter].xpath('li')
+                    if pList[0].xpath('@class').get() == "opt_item":
+                        adCounter += 1
+                        bNotAd = False
+                        continue
+                    else:
+                        bNotAd = True
+                        
+                item['productPrice'] = pList[0].xpath('p[2]/a/strong/text()').get()
+                yield item
             
         self.browser.close()
 
@@ -528,33 +555,38 @@ class cooler_Spider(scrapy.Spider):
         listSizeOption = self.browser.find_element_by_xpath('//option[@value="90"]')
         listSizeOption.click()
         
-        time.sleep(5)
-        
-        html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
-        selector = Selector(text=html)
-        
-        productIds = selector.xpath('//li[@class="prod_item prod_layer "]/@id').getall()
-        productNames = selector.xpath('//a[@name="productName"]/text()').getall()
-        productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
-        
-        adCounter = 0
-        for i in range(len(productIds)) :
-            item = ComputercrawlerItem()
-            item['productId'] = productIds[i][11:]
-            item['productName'] = productNames[i].strip()
+        for i in range(10):
+            if i != 0:
+                movePageBT = self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i)
+                movePageBT.click()
+                
+            time.sleep(5)
             
-            bNotAd = False
-            while not bNotAd:
-                pList = productPriceList[i+adCounter].xpath('li')
-                if pList[0].xpath('@class').get() == "opt_item":
-                    adCounter += 1
-                    bNotAd = False
-                    continue
-                else:
-                    bNotAd = True
-                    
-            item['productPrice'] = pList[0].xpath('p[2]/a/strong/text()').get()
-            yield item
+            html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
+            selector = Selector(text=html)
+            
+            productIds = selector.xpath('//li[@class="prod_item prod_layer "]/@id').getall()
+            productNames = selector.xpath('//a[@name="productName"]/text()').getall()
+            productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
+            
+            adCounter = 0
+            for i in range(len(productIds)) :
+                item = ComputercrawlerItem()
+                item['productId'] = productIds[i][11:]
+                item['productName'] = productNames[i].strip()
+                
+                bNotAd = False
+                while not bNotAd:
+                    pList = productPriceList[i+adCounter].xpath('li')
+                    if pList[0].xpath('@class').get() == "opt_item":
+                        adCounter += 1
+                        bNotAd = False
+                        continue
+                    else:
+                        bNotAd = True
+                        
+                item['productPrice'] = pList[0].xpath('p[2]/a/strong/text()').get()
+                yield item
             
         self.browser.close()
 
@@ -591,33 +623,38 @@ class Case_Spider(scrapy.Spider):
         listSizeOption = self.browser.find_element_by_xpath('//option[@value="90"]')
         listSizeOption.click()
         
-        time.sleep(5)
-        
-        html = self.browser.find_element_by_xpath('//*[@id="productListArea"]/div[4]/ul').get_attribute('outerHTML')
-        selector = Selector(text=html)
-        
-        productIds = selector.xpath('//li[@class="prod_item prod_layer "]/@id').getall()
-        productNames = selector.xpath('//a[@name="productName"]/text()').getall()
-        productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
-        
-        adCounter = 0
-        for i in range(len(productIds)) :
-            item = ComputercrawlerItem()
-            item['productId'] = productIds[i][11:]
-            item['productName'] = productNames[i].strip()
+        for i in range(10):
+            if i != 0:
+                movePageBT = self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i)
+                movePageBT.click()
+                
+            time.sleep(5)
             
-            bNotAd = False
-            while not bNotAd:
-                pList = productPriceList[i+adCounter].xpath('li')
-                if pList[0].xpath('@class').get() == "opt_item":
-                    adCounter += 1
-                    bNotAd = False
-                    continue
-                else:
-                    bNotAd = True
-                    
-            item['productPrice'] = pList[0].xpath('p[2]/a/strong/text()').get()
-            yield item
+            html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
+            selector = Selector(text=html)
+            
+            productIds = selector.xpath('//li[@class="prod_item prod_layer "]/@id').getall()
+            productNames = selector.xpath('//a[@name="productName"]/text()').getall()
+            productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
+            
+            adCounter = 0
+            for i in range(len(productIds)) :
+                item = ComputercrawlerItem()
+                item['productId'] = productIds[i][11:]
+                item['productName'] = productNames[i].strip()
+                
+                bNotAd = False
+                while not bNotAd:
+                    pList = productPriceList[i+adCounter].xpath('li')
+                    if pList[0].xpath('@class').get() == "opt_item":
+                        adCounter += 1
+                        bNotAd = False
+                        continue
+                    else:
+                        bNotAd = True
+                        
+                item['productPrice'] = pList[0].xpath('p[2]/a/strong/text()').get()
+                yield item
             
         self.browser.close()
 
