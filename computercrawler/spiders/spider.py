@@ -40,7 +40,6 @@ class cpu_Spider(scrapy.Spider):
         
         file = open('cpu_data.csv','a', newline='')
         csvWriter = csv.writer(file)
-        csvWriter.writerow(["---", "CPU"])
         csvWriter.writerow([time.strftime('%c', time.localtime(time.time()))])
         file.close()
 
@@ -103,7 +102,6 @@ class ram_Spider(scrapy.Spider):
         
         file = open('ram_data.csv','a', newline='')
         csvWriter = csv.writer(file)
-        csvWriter.writerow(["---", "RAM"])
         csvWriter.writerow([time.strftime('%c', time.localtime(time.time()))])
         file.close()
 
@@ -167,7 +165,6 @@ class vga_Spider(scrapy.Spider):
         
         file = open('vga_data.csv','a', newline='')
         csvWriter = csv.writer(file)
-        csvWriter.writerow(["---", "VGA"])
         csvWriter.writerow([time.strftime('%c', time.localtime(time.time()))])
         file.close()
 
@@ -231,7 +228,6 @@ class mboard_Spider(scrapy.Spider):
         
         file = open('mboard_data.csv','a', newline='')
         csvWriter = csv.writer(file)
-        csvWriter.writerow(["---", "MBoard"])
         csvWriter.writerow([time.strftime('%c', time.localtime(time.time()))])
         file.close()
 
@@ -295,7 +291,6 @@ class ssd_Spider(scrapy.Spider):
         
         file = open('ssd_data.csv','a', newline='')
         csvWriter = csv.writer(file)
-        csvWriter.writerow(["---", "SSD"])
         csvWriter.writerow([time.strftime('%c', time.localtime(time.time()))])
         file.close()
 
@@ -377,7 +372,6 @@ class hdd_Spider(scrapy.Spider):
         
         file = open('hdd_data.csv','a', newline='')
         csvWriter = csv.writer(file)
-        csvWriter.writerow(["---", "HDD"])
         csvWriter.writerow([time.strftime('%c', time.localtime(time.time()))])
         file.close()
 
@@ -459,7 +453,6 @@ class power_Spider(scrapy.Spider):
         
         file = open('power_data.csv','a', newline='')
         csvWriter = csv.writer(file)
-        csvWriter.writerow(["---", "Power"])
         csvWriter.writerow([time.strftime('%c', time.localtime(time.time()))])
         file.close()
 
@@ -523,7 +516,6 @@ class cooler_Spider(scrapy.Spider):
         
         file = open('cooler_data.csv','a', newline='')
         csvWriter = csv.writer(file)
-        csvWriter.writerow(["---", "Cooler"])
         csvWriter.writerow([time.strftime('%c', time.localtime(time.time()))])
         file.close()
 
@@ -587,7 +579,6 @@ class Case_Spider(scrapy.Spider):
         
         file = open('case_data.csv','a', newline='')
         csvWriter = csv.writer(file)
-        csvWriter.writerow(["---", "Case"])
         csvWriter.writerow([time.strftime('%c', time.localtime(time.time()))])
         file.close()
  
