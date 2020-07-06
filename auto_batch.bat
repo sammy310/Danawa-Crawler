@@ -22,4 +22,7 @@ scrapy crawl casecrawler -o case_data.csv -t csv
 
 python data_sorter.py
 
-exit
+
+git add --all
+git commit -m "Auto Update - %date% %time%"
+git push -u origin master

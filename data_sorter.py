@@ -66,9 +66,10 @@ for key in csvList.keys():
             for i in range(len(data),dataSize):
                 data.append(0)
         
-        
+    
+    productData = dataList.pop(0)
     dataList.sort(key= lambda x: x[1])
-    dataList.insert(0, dataList.pop())
+    dataList.insert(0, productData)
         
     with open(dataFile, 'w', newline='', encoding='utf8') as file:
         csvWriter = csv.writer(file)
