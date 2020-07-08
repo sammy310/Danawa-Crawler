@@ -41,6 +41,7 @@ for key in csvList.keys():
         dataList.append(['Id', 'Name'])
         
     dataList[0].append(crawl_dataList[0][0])
+    dataSize = len(dataList[0])
     
     for product in crawl_dataList:
         if not str(product[0]).isdigit():
@@ -49,8 +50,10 @@ for key in csvList.keys():
         isDataExist = False
         for data in dataList:
             if data[0] == product[0]:
-                data.append(product[2])
+                if len(data) < dataSize:
+                    data.append(product[2])
                 isDataExist = True
+                break
         
         if not isDataExist:
             newDataList = ([product[0], product[1]])
@@ -60,7 +63,6 @@ for key in csvList.keys():
         
             dataList.append(newDataList)
         
-    dataSize = len(dataList[0])
     for data in dataList:
         if len(data) < dataSize:
             for i in range(len(data),dataSize):
