@@ -13,6 +13,7 @@ from scrapy.selector import Selector
 from selenium import webdriver
 import time
 import datetime
+from datetime import timedelta
 import csv
 
 
@@ -36,12 +37,12 @@ class cpu_Spider(scrapy.Spider):
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "CPU"])
-        csvWriter.writerow([datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
+        csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')])
         file.close()
         
         file = open('cpu_data.csv','a', newline='')
         csvWriter = csv.writer(file)
-        csvWriter.writerow([datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
+        csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')])
         file.close()
 
     def start_requests(self):
@@ -109,12 +110,12 @@ class ram_Spider(scrapy.Spider):
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "RAM"])
-        csvWriter.writerow([datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
+        csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')])
         file.close()
         
         file = open('ram_data.csv','a', newline='')
         csvWriter = csv.writer(file)
-        csvWriter.writerow([datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
+        csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')])
         file.close()
 
     def start_requests(self):
@@ -183,12 +184,12 @@ class vga_Spider(scrapy.Spider):
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "VGA"])
-        csvWriter.writerow([datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
+        csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')])
         file.close()
         
         file = open('vga_data.csv','a', newline='')
         csvWriter = csv.writer(file)
-        csvWriter.writerow([datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
+        csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')])
         file.close()
 
     def start_requests(self):
@@ -257,12 +258,12 @@ class mboard_Spider(scrapy.Spider):
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "MBoard"])
-        csvWriter.writerow([datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
+        csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')])
         file.close()
         
         file = open('mboard_data.csv','a', newline='')
         csvWriter = csv.writer(file)
-        csvWriter.writerow([datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
+        csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')])
         file.close()
 
     def start_requests(self):
@@ -331,12 +332,12 @@ class ssd_Spider(scrapy.Spider):
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "SSD"])
-        csvWriter.writerow([datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
+        csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')])
         file.close()
         
         file = open('ssd_data.csv','a', newline='')
         csvWriter = csv.writer(file)
-        csvWriter.writerow([datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
+        csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')])
         file.close()
 
     def start_requests(self):
@@ -423,12 +424,12 @@ class hdd_Spider(scrapy.Spider):
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "HDD"])
-        csvWriter.writerow([datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
+        csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')])
         file.close()
         
         file = open('hdd_data.csv','a', newline='')
         csvWriter = csv.writer(file)
-        csvWriter.writerow([datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
+        csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')])
         file.close()
 
     def start_requests(self):
@@ -515,12 +516,12 @@ class power_Spider(scrapy.Spider):
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "Power"])
-        csvWriter.writerow([datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
+        csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')])
         file.close()
         
         file = open('power_data.csv','a', newline='')
         csvWriter = csv.writer(file)
-        csvWriter.writerow([datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
+        csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')])
         file.close()
 
     def start_requests(self):
@@ -591,12 +592,12 @@ class cooler_Spider(scrapy.Spider):
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "Cooler"])
-        csvWriter.writerow([datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
+        csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')])
         file.close()
         
         file = open('cooler_data.csv','a', newline='')
         csvWriter = csv.writer(file)
-        csvWriter.writerow([datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
+        csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')])
         file.close()
 
     def start_requests(self):
@@ -665,12 +666,12 @@ class Case_Spider(scrapy.Spider):
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "Case"])
-        csvWriter.writerow([datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
+        csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')])
         file.close()
         
         file = open('case_data.csv','a', newline='')
         csvWriter = csv.writer(file)
-        csvWriter.writerow([datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
+        csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')])
         file.close()
  
     def start_requests(self):
