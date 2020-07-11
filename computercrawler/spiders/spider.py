@@ -22,7 +22,9 @@ class cpu_Spider(scrapy.Spider):
     allowed_domains = ["www.danawa.com"]
     
     chrome_option = webdriver.ChromeOptions()
-    chrome_option.add_argument('headless')
+    chrome_option.add_argument('--headless')
+    chrome_option.add_argument('--window-size=1920,1080');
+    chrome_option.add_argument('--start-maximized');
     chrome_option.add_argument('--disable-gpu')
     chrome_option.add_argument('lang=ko=KR')
     
