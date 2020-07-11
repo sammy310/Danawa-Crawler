@@ -4,10 +4,7 @@
 name: Auto Crawler
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+
 
 jobs:
   build:
@@ -55,7 +52,7 @@ jobs:
         git config --local user.email "kipper098@gmail.com"
         git config --local user.name "Auto_Crawler_Bot"
         git add --all
-        git commit -m "Bot - Auto Crawl | $(date -d '+6 hour' +'%Y-%m-%d %H:%M:%S')"
+        git commit -m "Bot - Auto Crawl | $(date -d '+9 hour' +'%Y-%m-%d %H:%M:%S')"
     - name: Push
       uses: ad-m/github-push-action@master
       with:
