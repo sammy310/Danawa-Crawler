@@ -50,7 +50,7 @@ class cpu_Spider(scrapy.Spider):
         time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(10)
+        time.sleep(5)
         
         for i in range(-1, 2):
             if i == -1:
@@ -59,7 +59,7 @@ class cpu_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(10)
+            time.sleep(5)
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -69,14 +69,14 @@ class cpu_Spider(scrapy.Spider):
             productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
             
             adCounter = 0
-            for i in range(len(productIds)) :
+            for j in range(len(productIds)) :
                 item = ComputercrawlerItem()
-                item['productId'] = productIds[i][11:]
-                item['productName'] = productNames[i].strip()
+                item['productId'] = productIds[j][11:]
+                item['productName'] = productNames[j].strip()
                 
                 bNotAd = False
                 while not bNotAd:
-                    pList = productPriceList[i+adCounter].xpath('li')
+                    pList = productPriceList[j+adCounter].xpath('li')
                     if pList[0].xpath('@class').get() == "opt_item":
                         adCounter += 1
                         bNotAd = False
@@ -121,7 +121,7 @@ class ram_Spider(scrapy.Spider):
         time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(10)
+        time.sleep(5)
         
         for i in range(-1, 10):
             if i == -1:
@@ -130,7 +130,7 @@ class ram_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(10)
+            time.sleep(5)
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -140,14 +140,14 @@ class ram_Spider(scrapy.Spider):
             productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
             
             adCounter = 0
-            for i in range(len(productIds)) :
+            for j in range(len(productIds)) :
                 item = ComputercrawlerItem()
-                item['productId'] = productIds[i][11:]
-                item['productName'] = productNames[i].strip()
+                item['productId'] = productIds[j][11:]
+                item['productName'] = productNames[j].strip()
                 
                 bNotAd = False
                 while not bNotAd:
-                    pList = productPriceList[i+adCounter].xpath('li')
+                    pList = productPriceList[j+adCounter].xpath('li')
                     if pList[0].xpath('@class').get() == "opt_item":
                         adCounter += 1
                         bNotAd = False
@@ -193,7 +193,7 @@ class vga_Spider(scrapy.Spider):
         time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(10)
+        time.sleep(5)
         
         for i in range(-1, 10):
             if i == -1:
@@ -202,7 +202,7 @@ class vga_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(10)
+            time.sleep(5)
         
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -212,14 +212,14 @@ class vga_Spider(scrapy.Spider):
             productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
             
             adCounter = 0
-            for i in range(len(productIds)) :
+            for j in range(len(productIds)) :
                 item = ComputercrawlerItem()
-                item['productId'] = productIds[i][11:]
-                item['productName'] = productNames[i].strip()
+                item['productId'] = productIds[j][11:]
+                item['productName'] = productNames[j].strip()
                 
                 bNotAd = False
                 while not bNotAd:
-                    pList = productPriceList[i+adCounter].xpath('li')
+                    pList = productPriceList[j+adCounter].xpath('li')
                     if pList[0].xpath('@class').get() == "opt_item":
                         adCounter += 1
                         bNotAd = False
@@ -265,7 +265,7 @@ class mboard_Spider(scrapy.Spider):
         time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(10)
+        time.sleep(5)
         
         for i in range(-1, 10):
             if i == -1:
@@ -274,7 +274,7 @@ class mboard_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(10)
+            time.sleep(5)
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -284,14 +284,14 @@ class mboard_Spider(scrapy.Spider):
             productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
             
             adCounter = 0
-            for i in range(len(productIds)) :
+            for j in range(len(productIds)) :
                 item = ComputercrawlerItem()
-                item['productId'] = productIds[i][11:]
-                item['productName'] = productNames[i].strip()
+                item['productId'] = productIds[j][11:]
+                item['productName'] = productNames[j].strip()
                 
                 bNotAd = False
                 while not bNotAd:
-                    pList = productPriceList[i+adCounter].xpath('li')
+                    pList = productPriceList[j+adCounter].xpath('li')
                     if pList[0].xpath('@class').get() == "opt_item":
                         adCounter += 1
                         bNotAd = False
@@ -337,7 +337,7 @@ class ssd_Spider(scrapy.Spider):
         time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(10)
+        time.sleep(5)
         
         for i in range(-1, 4):
             if i == -1:
@@ -346,7 +346,7 @@ class ssd_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(10)
+            time.sleep(5)
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -357,15 +357,15 @@ class ssd_Spider(scrapy.Spider):
             
             
             adCounter = 0
-            for i in range(len(productIds)) :
+            for j in range(len(productIds)) :
                 item = ComputercrawlerItem()
-                item['productId'] = productIds[i][11:]
-                item['productName'] = productNames[i].strip()
+                item['productId'] = productIds[j][11:]
+                item['productName'] = productNames[j].strip()
                 
                 bNotAd = False
                 priceStr = ""
                 while not bNotAd:
-                    pList = productPriceList[i+adCounter].xpath('li')
+                    pList = productPriceList[j+adCounter].xpath('li')
                     if pList[0].xpath('@class').get() == "opt_item":
                         adCounter += 1
                         bNotAd = False
@@ -373,19 +373,19 @@ class ssd_Spider(scrapy.Spider):
                     else:
                         bNotAd = True
                     
-                    for j in range(len(pList)):
-                        for pStr in pList[j].xpath('div/p/text()').getall():
+                    for k in range(len(pList)):
+                        for pStr in pList[k].xpath('div/p/text()').getall():
                             if bool(pStr.strip()):
                                 priceStr += pStr.strip()
                         priceStr += '_'
-                        if pList[j].xpath('div/p/a/span/text()').get():
-                            priceStr += pList[j].xpath('div/p/a/span/text()').get()
-                        elif pList[j].xpath('div/p/a/span/em/text()').get():
-                            priceStr += pList[j].xpath('div/p/a/span/em/text()').get()
+                        if pList[k].xpath('div/p/a/span/text()').get():
+                            priceStr += pList[k].xpath('div/p/a/span/text()').get()
+                        elif pList[k].xpath('div/p/a/span/em/text()').get():
+                            priceStr += pList[k].xpath('div/p/a/span/em/text()').get()
                         else:
                             priceStr += "---"
                         priceStr += '_'
-                        priceStr += pList[j].xpath('p[2]/a/strong/text()').get()
+                        priceStr += pList[k].xpath('p[2]/a/strong/text()').get()
                         priceStr += ' '
                     
                     
@@ -427,7 +427,7 @@ class hdd_Spider(scrapy.Spider):
         time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(10)
+        time.sleep(5)
         
         for i in range(-1, 2):
             if i == -1:
@@ -436,7 +436,7 @@ class hdd_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(10)
+            time.sleep(5)
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -447,15 +447,15 @@ class hdd_Spider(scrapy.Spider):
             
             
             adCounter = 0
-            for i in range(len(productIds)) :
+            for j in range(len(productIds)) :
                 item = ComputercrawlerItem()
-                item['productId'] = productIds[i][11:]
-                item['productName'] = productNames[i].strip()
+                item['productId'] = productIds[j][11:]
+                item['productName'] = productNames[j].strip()
                 
                 bNotAd = False
                 priceStr = ""
                 while not bNotAd:
-                    pList = productPriceList[i+adCounter].xpath('li')
+                    pList = productPriceList[j+adCounter].xpath('li')
                     if pList[0].xpath('@class').get() == "opt_item":
                         adCounter += 1
                         bNotAd = False
@@ -463,19 +463,19 @@ class hdd_Spider(scrapy.Spider):
                     else:
                         bNotAd = True
                     
-                    for j in range(len(pList)):
-                        for pStr in pList[j].xpath('div/p/text()').getall():
+                    for k in range(len(pList)):
+                        for pStr in pList[k].xpath('div/p/text()').getall():
                             if bool(pStr.strip()):
                                 priceStr += pStr.strip()
                         priceStr += '_'
-                        if pList[j].xpath('div/p/a/span/text()').get():
-                            priceStr += pList[j].xpath('div/p/a/span/text()').get()
-                        elif pList[j].xpath('div/p/a/span/em/text()').get():
-                            priceStr += pList[j].xpath('div/p/a/span/em/text()').get()
+                        if pList[k].xpath('div/p/a/span/text()').get():
+                            priceStr += pList[k].xpath('div/p/a/span/text()').get()
+                        elif pList[k].xpath('div/p/a/span/em/text()').get():
+                            priceStr += pList[k].xpath('div/p/a/span/em/text()').get()
                         else:
                             priceStr += "---"
                         priceStr += '_'
-                        priceStr += pList[j].xpath('p[2]/a/strong/text()').get()
+                        priceStr += pList[k].xpath('p[2]/a/strong/text()').get()
                         priceStr += ' '
                     
                     
@@ -517,7 +517,7 @@ class power_Spider(scrapy.Spider):
         time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(10)
+        time.sleep(5)
         
         
         
@@ -528,7 +528,7 @@ class power_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(10)
+            time.sleep(5)
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -538,14 +538,14 @@ class power_Spider(scrapy.Spider):
             productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
             
             adCounter = 0
-            for i in range(len(productIds)) :
+            for j in range(len(productIds)) :
                 item = ComputercrawlerItem()
-                item['productId'] = productIds[i][11:]
-                item['productName'] = productNames[i].strip()
+                item['productId'] = productIds[j][11:]
+                item['productName'] = productNames[j].strip()
                 
                 bNotAd = False
                 while not bNotAd:
-                    pList = productPriceList[i+adCounter].xpath('li')
+                    pList = productPriceList[j+adCounter].xpath('li')
                     if pList[0].xpath('@class').get() == "opt_item":
                         adCounter += 1
                         bNotAd = False
@@ -591,7 +591,7 @@ class cooler_Spider(scrapy.Spider):
         time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(10)
+        time.sleep(5)
         
         for i in range(-1, 10):
             if i == -1:
@@ -600,7 +600,7 @@ class cooler_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(10)
+            time.sleep(5)
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -610,14 +610,14 @@ class cooler_Spider(scrapy.Spider):
             productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
             
             adCounter = 0
-            for i in range(len(productIds)) :
+            for j in range(len(productIds)) :
                 item = ComputercrawlerItem()
-                item['productId'] = productIds[i][11:]
-                item['productName'] = productNames[i].strip()
+                item['productId'] = productIds[j][11:]
+                item['productName'] = productNames[j].strip()
                 
                 bNotAd = False
                 while not bNotAd:
-                    pList = productPriceList[i+adCounter].xpath('li')
+                    pList = productPriceList[j+adCounter].xpath('li')
                     if pList[0].xpath('@class').get() == "opt_item":
                         adCounter += 1
                         bNotAd = False
@@ -663,7 +663,7 @@ class Case_Spider(scrapy.Spider):
         time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(10)
+        time.sleep(5)
         
         for i in range(-1, 10):
             if i == -1:
@@ -672,7 +672,7 @@ class Case_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(10)
+            time.sleep(5)
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -682,14 +682,14 @@ class Case_Spider(scrapy.Spider):
             productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
             
             adCounter = 0
-            for i in range(len(productIds)) :
+            for j in range(len(productIds)) :
                 item = ComputercrawlerItem()
-                item['productId'] = productIds[i][11:]
-                item['productName'] = productNames[i].strip()
+                item['productId'] = productIds[j][11:]
+                item['productName'] = productNames[j].strip()
                 
                 bNotAd = False
                 while not bNotAd:
-                    pList = productPriceList[i+adCounter].xpath('li')
+                    pList = productPriceList[j+adCounter].xpath('li')
                     if pList[0].xpath('@class').get() == "opt_item":
                         adCounter += 1
                         bNotAd = False
