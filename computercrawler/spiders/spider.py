@@ -50,7 +50,7 @@ class cpu_Spider(scrapy.Spider):
         time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(5)
+        time.sleep(10)
         
         for i in range(-1, 2):
             if i == -1:
@@ -59,7 +59,7 @@ class cpu_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(5)
+            time.sleep(10)
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -121,7 +121,7 @@ class ram_Spider(scrapy.Spider):
         time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(5)
+        time.sleep(10)
         
         for i in range(-1, 10):
             if i == -1:
@@ -130,7 +130,7 @@ class ram_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(5)
+            time.sleep(10)
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -193,7 +193,7 @@ class vga_Spider(scrapy.Spider):
         time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(5)
+        time.sleep(10)
         
         for i in range(-1, 10):
             if i == -1:
@@ -202,7 +202,7 @@ class vga_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(5)
+            time.sleep(10)
         
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -265,7 +265,7 @@ class mboard_Spider(scrapy.Spider):
         time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(5)
+        time.sleep(10)
         
         for i in range(-1, 10):
             if i == -1:
@@ -274,7 +274,7 @@ class mboard_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(5)
+            time.sleep(10)
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -337,7 +337,7 @@ class ssd_Spider(scrapy.Spider):
         time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(5)
+        time.sleep(10)
         
         for i in range(-1, 4):
             if i == -1:
@@ -346,7 +346,7 @@ class ssd_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(5)
+            time.sleep(10)
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -427,7 +427,7 @@ class hdd_Spider(scrapy.Spider):
         time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(5)
+        time.sleep(10)
         
         for i in range(-1, 2):
             if i == -1:
@@ -436,7 +436,7 @@ class hdd_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(5)
+            time.sleep(10)
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -517,7 +517,7 @@ class power_Spider(scrapy.Spider):
         time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(5)
+        time.sleep(10)
         
         
         
@@ -528,8 +528,7 @@ class power_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-                
-            time.sleep(5)
+            time.sleep(10)
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -592,7 +591,7 @@ class cooler_Spider(scrapy.Spider):
         time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(5)
+        time.sleep(10)
         
         for i in range(-1, 10):
             if i == -1:
@@ -601,8 +600,7 @@ class cooler_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-                
-            time.sleep(5)
+            time.sleep(10)
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -665,7 +663,7 @@ class Case_Spider(scrapy.Spider):
         time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(5)
+        time.sleep(10)
         
         for i in range(-1, 10):
             if i == -1:
@@ -674,8 +672,7 @@ class Case_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-                
-            time.sleep(5)
+            time.sleep(10)
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
