@@ -29,7 +29,8 @@ class cpu_Spider(scrapy.Spider):
     
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112747'
-        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
+        #self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
+        self.browser = webdriver.Chrome("chromedriver", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "CPU"])
@@ -99,7 +100,8 @@ class ram_Spider(scrapy.Spider):
     
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112752'
-        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
+        #self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
+        self.browser = webdriver.Chrome("chromedriver", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "RAM"])
@@ -170,7 +172,8 @@ class vga_Spider(scrapy.Spider):
     
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112753'
-        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
+        #self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
+        self.browser = webdriver.Chrome("chromedriver", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "VGA"])
@@ -241,7 +244,8 @@ class mboard_Spider(scrapy.Spider):
     
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112751'
-        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
+        #self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
+        self.browser = webdriver.Chrome("chromedriver", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "MBoard"])
@@ -312,7 +316,8 @@ class ssd_Spider(scrapy.Spider):
     
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112760'
-        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
+        #self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
+        self.browser = webdriver.Chrome("chromedriver", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "SSD"])
@@ -401,7 +406,8 @@ class hdd_Spider(scrapy.Spider):
     
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112763'
-        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
+        #self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
+        self.browser = webdriver.Chrome("chromedriver", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "HDD"])
@@ -490,7 +496,8 @@ class power_Spider(scrapy.Spider):
     
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112777'
-        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
+        #self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
+        self.browser = webdriver.Chrome("chromedriver", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "Power"])
@@ -564,7 +571,8 @@ class cooler_Spider(scrapy.Spider):
     
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=11236855'
-        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
+        #self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
+        self.browser = webdriver.Chrome("chromedriver", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "Cooler"])
@@ -636,7 +644,8 @@ class Case_Spider(scrapy.Spider):
     
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112775'
-        self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
+        #self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
+        self.browser = webdriver.Chrome("chromedriver", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
         csvWriter.writerow(["---", "Case"])
