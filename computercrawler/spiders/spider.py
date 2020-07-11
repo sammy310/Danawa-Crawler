@@ -58,9 +58,7 @@ class cpu_Spider(scrapy.Spider):
             if i == -1:
                 self.browser.find_element_by_xpath('//li[@data-sort-method="NEW"]').click()
             elif i == 0:
-                bestBT = self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]')
-                time.sleep(5)
-                bestBT.click()
+                self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
             time.sleep(5)
@@ -98,7 +96,9 @@ class ram_Spider(scrapy.Spider):
     allowed_domains = ["www.danawa.com"]
     
     chrome_option = webdriver.ChromeOptions()
-    chrome_option.add_argument('headless')
+    chrome_option.add_argument('--headless')
+    chrome_option.add_argument('--window-size=1920,1080');
+    chrome_option.add_argument('--start-maximized');
     chrome_option.add_argument('--disable-gpu')
     chrome_option.add_argument('lang=ko=KR')
     
@@ -170,7 +170,9 @@ class vga_Spider(scrapy.Spider):
     allowed_domains = ["www.danawa.com"]
     
     chrome_option = webdriver.ChromeOptions()
-    chrome_option.add_argument('headless')
+    chrome_option.add_argument('--headless')
+    chrome_option.add_argument('--window-size=1920,1080');
+    chrome_option.add_argument('--start-maximized');
     chrome_option.add_argument('--disable-gpu')
     chrome_option.add_argument('lang=ko=KR')
     
@@ -242,7 +244,9 @@ class mboard_Spider(scrapy.Spider):
     allowed_domains = ["www.danawa.com"]
     
     chrome_option = webdriver.ChromeOptions()
-    chrome_option.add_argument('headless')
+    chrome_option.add_argument('--headless')
+    chrome_option.add_argument('--window-size=1920,1080');
+    chrome_option.add_argument('--start-maximized');
     chrome_option.add_argument('--disable-gpu')
     chrome_option.add_argument('lang=ko=KR')
     
@@ -314,7 +318,9 @@ class ssd_Spider(scrapy.Spider):
     allowed_domains = ["www.danawa.com"]
     
     chrome_option = webdriver.ChromeOptions()
-    chrome_option.add_argument('headless')
+    chrome_option.add_argument('--headless')
+    chrome_option.add_argument('--window-size=1920,1080');
+    chrome_option.add_argument('--start-maximized');
     chrome_option.add_argument('--disable-gpu')
     chrome_option.add_argument('lang=ko=KR')
     
@@ -404,7 +410,9 @@ class hdd_Spider(scrapy.Spider):
     allowed_domains = ["www.danawa.com"]
     
     chrome_option = webdriver.ChromeOptions()
-    chrome_option.add_argument('headless')
+    chrome_option.add_argument('--headless')
+    chrome_option.add_argument('--window-size=1920,1080');
+    chrome_option.add_argument('--start-maximized');
     chrome_option.add_argument('--disable-gpu')
     chrome_option.add_argument('lang=ko=KR')
     
@@ -494,7 +502,9 @@ class power_Spider(scrapy.Spider):
     allowed_domains = ["www.danawa.com"]
     
     chrome_option = webdriver.ChromeOptions()
-    chrome_option.add_argument('headless')
+    chrome_option.add_argument('--headless')
+    chrome_option.add_argument('--window-size=1920,1080');
+    chrome_option.add_argument('--start-maximized');
     chrome_option.add_argument('--disable-gpu')
     chrome_option.add_argument('lang=ko=KR')
     
@@ -568,7 +578,9 @@ class cooler_Spider(scrapy.Spider):
     allowed_domains = ["www.danawa.com"]
     
     chrome_option = webdriver.ChromeOptions()
-    chrome_option.add_argument('headless')
+    chrome_option.add_argument('--headless')
+    chrome_option.add_argument('--window-size=1920,1080');
+    chrome_option.add_argument('--start-maximized');
     chrome_option.add_argument('--disable-gpu')
     chrome_option.add_argument('lang=ko=KR')
     
@@ -640,7 +652,9 @@ class Case_Spider(scrapy.Spider):
     allowed_domains = ["www.danawa.com"]
     
     chrome_option = webdriver.ChromeOptions()
-    chrome_option.add_argument('headless')
+    chrome_option.add_argument('--headless')
+    chrome_option.add_argument('--window-size=1920,1080');
+    chrome_option.add_argument('--start-maximized');
     chrome_option.add_argument('--disable-gpu')
     chrome_option.add_argument('lang=ko=KR')
     
