@@ -56,7 +56,9 @@ class cpu_Spider(scrapy.Spider):
             if i == -1:
                 self.browser.find_element_by_xpath('//li[@data-sort-method="NEW"]').click()
             elif i == 0:
-                self.browser.find_element_by_xpath('//*[@id="productListArea"]/div[2]/div[1]/ul/li[1]').click()
+                bestBT = self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]')
+                time.sleep(5)
+                bestBT.click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
             time.sleep(5)
