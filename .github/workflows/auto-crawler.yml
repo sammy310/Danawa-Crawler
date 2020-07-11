@@ -29,20 +29,26 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Install Chromdriver
       run: |
-        sudo apt-get install google-chrome-stable    
-        wget https://chromedriver.storage.googleapis.com/2.40/chromedriver_linux64.zip
-        unzip ./chromedriver_linux64.zip
+        if [! -e 'chromedriver']; then
+          echo 'chromedriver not exist!'
+          sudo apt-get install google-chrome-stable
+          wget https://chromedriver.storage.googleapis.com/2.40/chromedriver_linux64.zip
+          unzip ./chromedriver_linux64.zip
+          rm -rf ./chromedriver_linux64.zip
+        else
+          echo 'chromedriver already exist!'
+        fi
     - name: Run Crawler
       run: |
-        scrapy crawl cpucrawler -o cpu_data.csv -t csv
-        scrapy crawl vgacrawler -o vga_data.csv -t csv
-        scrapy crawl mboardcrawler -o mboard_data.csv -t csv
-        scrapy crawl ramcrawler -o ram_data.csv -t csv
-        scrapy crawl ssdcrawler -o ssd_data.csv -t csv
-        scrapy crawl hddcrawler -o hdd_data.csv -t csv
-        scrapy crawl powercrawler -o power_data.csv -t csv
-        scrapy crawl coolercrawler -o cooler_data.csv -t csv
-        scrapy crawl casecrawler -o case_data.csv -t csv
+        scrapy crawl cpucrawler -o cpu_data.csv
+        scrapy crawl vgacrawler -o vga_data.csv
+        scrapy crawl mboardcrawler -o mboard_data.csv
+        scrapy crawl ramcrawler -o ram_data.csv
+        scrapy crawl ssdcrawler -o ssd_data.csv
+        scrapy crawl hddcrawler -o hdd_data.csv
+        scrapy crawl powercrawler -o power_data.csv
+        scrapy crawl coolercrawler -o cooler_data.csv
+        scrapy crawl casecrawler -o case_data.csv
         python data_sorter.py
     - name: Commits
       run: |
