@@ -8,18 +8,18 @@ Actions의 큐 대기시간과 크롤링에 걸리는 시간(약 10분)이 존�
 
 
 ## [크롤링 데이터](https://github.com/sammy310/Danawa_Crawler/tree/master/crawl_data)
-- [CPU](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/CPU.csv)
-- [그래픽카드](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/VGA.csv)
+- [CPU](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?cpu) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/CPU.csv)
+- [그래픽카드](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?vga) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/VGA.csv)
 
-- [마더보드](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/MBoard.csv)
-- [램](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/RAM.csv)
+- [마더보드](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?mboard) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/MBoard.csv)
+- [램](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?ram) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/RAM.csv)
 
-- [SSD](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/SSD.csv)
-- [HDD](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/HDD.csv)
+- [SSD](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?ssd) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/SSD.csv)
+- [HDD](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?hdd) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/HDD.csv)
 
-- [쿨러](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Cooler.csv)
-- [케이스](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Case.csv)
-- [파워](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Power.csv)
+- [쿨러](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?cooler) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Cooler.csv)
+- [케이스](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?case) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Case.csv)
+- [파워](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?power) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Power.csv)
 
 
 ---
