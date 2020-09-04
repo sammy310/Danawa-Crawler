@@ -117,6 +117,7 @@ class ram_Spider(scrapy.Spider):
         csvWriter = csv.writer(file)
         csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')])
         file.close()
+        
 
     def start_requests(self):
         yield scrapy.Request(self.siteURL ,self.parse)
@@ -140,7 +141,7 @@ class ram_Spider(scrapy.Spider):
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
             
-            productIds = selector.xpath('//li[@class="prod_item prod_layer width_change"]/@id').getall()
+            productIds = selector.xpath('//li[@class="prod_item prod_layer "]/@id').getall()
             productNames = selector.xpath('//a[@name="productName"]/text()').getall()
             productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
             
@@ -151,6 +152,7 @@ class ram_Spider(scrapy.Spider):
                 item['productName'] = productNames[j].strip()
                 
                 bNotAd = False
+                priceStr = ""
                 while not bNotAd:
                     pList = productPriceList[j+adCounter].xpath('li')
                     if pList[0].xpath('@class').get() == "opt_item":
@@ -159,8 +161,24 @@ class ram_Spider(scrapy.Spider):
                         continue
                     else:
                         bNotAd = True
-                        
-                item['productPrice'] = pList[0].xpath('p[2]/a/strong/text()').get()
+                    
+                    for k in range(len(pList)):
+                        for pStr in pList[k].xpath('div/p/text()').getall():
+                            if bool(pStr.strip()):
+                                priceStr += pStr.strip()
+                        priceStr += '_'
+                        if pList[k].xpath('div/p/a/span/text()').get():
+                            priceStr += pList[k].xpath('div/p/a/span/text()').get()
+                        elif pList[k].xpath('div/p/a/span/em/text()').get():
+                            priceStr += pList[k].xpath('div/p/a/span/em/text()').get()
+                        else:
+                            priceStr += "---"
+                        priceStr += '_'
+                        priceStr += pList[k].xpath('p[2]/a/strong/text()').get()
+                        priceStr += ' '
+                    
+                    
+                item['productPrice'] = priceStr
                 yield item
             
         self.browser.close()
