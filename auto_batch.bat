@@ -20,6 +20,8 @@ scrapy crawl coolercrawler -o cooler_data.csv -t csv
 
 scrapy crawl casecrawler -o case_data.csv -t csv
 
+scrapy crawl monitorcrawler -o monitor_data.csv -t csv
+
 python data_sorter.py
 
 

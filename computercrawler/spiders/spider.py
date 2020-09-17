@@ -638,7 +638,7 @@ class cooler_Spider(scrapy.Spider):
         wait = WebDriverWait(self.browser,5)
         wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
         
-        for i in range(-1, 10):
+        for i in range(-1, 15):
             if i == -1:
                 self.browser.find_element_by_xpath('//li[@data-sort-method="NEW"]').click()
             elif i == 0:
@@ -714,6 +714,82 @@ class Case_Spider(scrapy.Spider):
         wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
         
         for i in range(-1, 10):
+            if i == -1:
+                self.browser.find_element_by_xpath('//li[@data-sort-method="NEW"]').click()
+            elif i == 0:
+                self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
+            elif i > 0:
+                self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
+            wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
+            
+            html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
+            selector = Selector(text=html)
+            
+            productIds = selector.xpath('//li[@class="prod_item prod_layer "]/@id').getall()
+            productNames = selector.xpath('//a[@name="productName"]/text()').getall()
+            productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
+            
+            adCounter = 0
+            for j in range(len(productIds)) :
+                item = ComputercrawlerItem()
+                item['productId'] = productIds[j][11:]
+                item['productName'] = productNames[j].strip()
+                
+                bNotAd = False
+                while not bNotAd:
+                    pList = productPriceList[j+adCounter].xpath('li')
+                    if pList[0].xpath('@class').get() == "opt_item":
+                        adCounter += 1
+                        bNotAd = False
+                        continue
+                    else:
+                        bNotAd = True
+                        
+                item['productPrice'] = pList[0].xpath('p[2]/a/strong/text()').get()
+                yield item
+            
+        self.browser.close()
+        
+        
+class Monitor_Spider(scrapy.Spider):
+    name = "monitorcrawler"
+    allowed_domains = ["www.danawa.com"]
+    
+    chrome_option = webdriver.ChromeOptions()
+    chrome_option.add_argument('--headless')
+    chrome_option.add_argument('--window-size=1920,1080');
+    chrome_option.add_argument('--start-maximized');
+    chrome_option.add_argument('--disable-gpu')
+    chrome_option.add_argument('lang=ko=KR')
+    
+    def __init__(self):
+        self.siteURL = 'http://prod.danawa.com/list/?cate=112757'
+        #self.browser = webdriver.Chrome("chromedriver.exe")
+        self.browser = webdriver.Chrome("chromedriver", chrome_options=self.chrome_option)
+        file = open('ComputerCrawlerFile.csv','a', newline='')
+        csvWriter = csv.writer(file)
+        csvWriter.writerow(["---", "Monitor"])
+        csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')])
+        file.close()
+        
+        file = open('monitor_data.csv','a', newline='')
+        csvWriter = csv.writer(file)
+        csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')])
+        file.close()
+ 
+    def start_requests(self):
+        yield scrapy.Request(self.siteURL ,self.parse)
+ 
+    def parse(self, response):
+        self.browser.implicitly_wait(2)
+        self.browser.get(self.siteURL)
+        
+        self.browser.find_element_by_xpath('//option[@value="90"]').click()
+
+        wait = WebDriverWait(self.browser,5)
+        wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
+        
+        for i in range(-1, 20):
             if i == -1:
                 self.browser.find_element_by_xpath('//li[@data-sort-method="NEW"]').click()
             elif i == 0:

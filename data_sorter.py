@@ -9,7 +9,7 @@ import csv
 import os.path
 
 
-csvList = {'CPU':'cpu_data.csv', 'VGA':'vga_data.csv', 'MBoard':'mboard_data.csv', 'RAM':'ram_data.csv', 'SSD':'ssd_data.csv', 'HDD':'hdd_data.csv', 'Power':'power_data.csv', 'Cooler':'cooler_data.csv', 'Case':'case_data.csv'}
+csvList = {'CPU':'cpu_data.csv', 'VGA':'vga_data.csv', 'MBoard':'mboard_data.csv', 'RAM':'ram_data.csv', 'SSD':'ssd_data.csv', 'HDD':'hdd_data.csv', 'Power':'power_data.csv', 'Cooler':'cooler_data.csv', 'Case':'case_data.csv', 'Monitor':'monitor_data.csv'}
 dataPath = 'crawl_data/'
 
 for key in csvList.keys():
