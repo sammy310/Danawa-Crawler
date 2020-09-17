@@ -47,6 +47,7 @@ jobs:
         scrapy crawl powercrawler -o power_data.csv
         scrapy crawl coolercrawler -o cooler_data.csv
         scrapy crawl casecrawler -o case_data.csv
+        scrapy crawl monitorcrawler -o monitor_data.csv
         python data_sorter.py
     - name: Commits
       run: |
