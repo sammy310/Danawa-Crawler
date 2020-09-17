@@ -11,6 +11,9 @@ from computercrawler.items import ComputercrawlerItem
 from scrapy.selector import Selector
 
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
 import datetime
 from datetime import timedelta
@@ -32,7 +35,7 @@ class cpu_Spider(scrapy.Spider):
     
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112747'
-        #self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
+        #self.browser = webdriver.Chrome("chromedriver.exe")
         self.browser = webdriver.Chrome("chromedriver", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
@@ -49,11 +52,13 @@ class cpu_Spider(scrapy.Spider):
         yield scrapy.Request(self.siteURL ,self.parse)
 
     def parse(self, response):
+        self.browser.implicitly_wait(2)
         self.browser.get(self.siteURL)
-        time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(5)
+        
+        wait = WebDriverWait(self.browser,5)
+        wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
         
         for i in range(-1, 2):
             if i == -1:
@@ -62,7 +67,7 @@ class cpu_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(5)
+            wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -105,7 +110,6 @@ class ram_Spider(scrapy.Spider):
     
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112752'
-        #self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
         self.browser = webdriver.Chrome("chromedriver", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
@@ -123,11 +127,13 @@ class ram_Spider(scrapy.Spider):
         yield scrapy.Request(self.siteURL ,self.parse)
 
     def parse(self, response):
+        self.browser.implicitly_wait(2)
         self.browser.get(self.siteURL)
-        time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(5)
+
+        wait = WebDriverWait(self.browser,5)
+        wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
         
         for i in range(-1, 10):
             if i == -1:
@@ -136,7 +142,7 @@ class ram_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(5)
+            wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -197,7 +203,6 @@ class vga_Spider(scrapy.Spider):
     
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112753'
-        #self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
         self.browser = webdriver.Chrome("chromedriver", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
@@ -214,11 +219,13 @@ class vga_Spider(scrapy.Spider):
         yield scrapy.Request(self.siteURL ,self.parse)
 
     def parse(self, response):
+        self.browser.implicitly_wait(2)
         self.browser.get(self.siteURL)
-        time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(5)
+
+        wait = WebDriverWait(self.browser,5)
+        wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
         
         for i in range(-1, 10):
             if i == -1:
@@ -227,7 +234,7 @@ class vga_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(5)
+            wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
         
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -271,7 +278,6 @@ class mboard_Spider(scrapy.Spider):
     
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112751'
-        #self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
         self.browser = webdriver.Chrome("chromedriver", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
@@ -288,11 +294,13 @@ class mboard_Spider(scrapy.Spider):
         yield scrapy.Request(self.siteURL ,self.parse)
 
     def parse(self, response):
+        self.browser.implicitly_wait(2)
         self.browser.get(self.siteURL)
-        time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(5)
+
+        wait = WebDriverWait(self.browser,5)
+        wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
         
         for i in range(-1, 10):
             if i == -1:
@@ -301,7 +309,7 @@ class mboard_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(5)
+            wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -345,7 +353,6 @@ class ssd_Spider(scrapy.Spider):
     
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112760'
-        #self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
         self.browser = webdriver.Chrome("chromedriver", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
@@ -362,11 +369,13 @@ class ssd_Spider(scrapy.Spider):
         yield scrapy.Request(self.siteURL ,self.parse)
 
     def parse(self, response):
+        self.browser.implicitly_wait(2)
         self.browser.get(self.siteURL)
-        time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(5)
+
+        wait = WebDriverWait(self.browser,5)
+        wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
         
         for i in range(-1, 4):
             if i == -1:
@@ -375,7 +384,7 @@ class ssd_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(5)
+            wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -437,7 +446,6 @@ class hdd_Spider(scrapy.Spider):
     
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112763'
-        #self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
         self.browser = webdriver.Chrome("chromedriver", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
@@ -454,11 +462,13 @@ class hdd_Spider(scrapy.Spider):
         yield scrapy.Request(self.siteURL ,self.parse)
 
     def parse(self, response):
+        self.browser.implicitly_wait(2)
         self.browser.get(self.siteURL)
-        time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(5)
+
+        wait = WebDriverWait(self.browser,5)
+        wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
         
         for i in range(-1, 2):
             if i == -1:
@@ -467,7 +477,7 @@ class hdd_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(5)
+            wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -529,7 +539,6 @@ class power_Spider(scrapy.Spider):
     
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112777'
-        #self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
         self.browser = webdriver.Chrome("chromedriver", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
@@ -546,13 +555,13 @@ class power_Spider(scrapy.Spider):
         yield scrapy.Request(self.siteURL ,self.parse)
  
     def parse(self, response):
+        self.browser.implicitly_wait(2)
         self.browser.get(self.siteURL)
-        time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(5)
         
-        
+        wait = WebDriverWait(self.browser,5)
+        wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
         
         for i in range(-1, 6):
             if i == -1:
@@ -561,7 +570,7 @@ class power_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(5)
+            wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -605,7 +614,6 @@ class cooler_Spider(scrapy.Spider):
     
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=11236855'
-        #self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
         self.browser = webdriver.Chrome("chromedriver", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
@@ -622,11 +630,13 @@ class cooler_Spider(scrapy.Spider):
         yield scrapy.Request(self.siteURL ,self.parse)
  
     def parse(self, response):
+        self.browser.implicitly_wait(2)
         self.browser.get(self.siteURL)
-        time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(5)
+
+        wait = WebDriverWait(self.browser,5)
+        wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
         
         for i in range(-1, 10):
             if i == -1:
@@ -635,7 +645,7 @@ class cooler_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(5)
+            wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
@@ -679,7 +689,6 @@ class Case_Spider(scrapy.Spider):
     
     def __init__(self):
         self.siteURL = 'http://prod.danawa.com/list/?cate=112775'
-        #self.browser = webdriver.Chrome("C:\\anaconda3\\chromedriver.exe", chrome_options=self.chrome_option)
         self.browser = webdriver.Chrome("chromedriver", chrome_options=self.chrome_option)
         file = open('ComputerCrawlerFile.csv','a', newline='')
         csvWriter = csv.writer(file)
@@ -696,11 +705,13 @@ class Case_Spider(scrapy.Spider):
         yield scrapy.Request(self.siteURL ,self.parse)
  
     def parse(self, response):
+        self.browser.implicitly_wait(2)
         self.browser.get(self.siteURL)
-        time.sleep(2)
         
         self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        time.sleep(5)
+
+        wait = WebDriverWait(self.browser,5)
+        wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
         
         for i in range(-1, 10):
             if i == -1:
@@ -709,7 +720,7 @@ class Case_Spider(scrapy.Spider):
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
                 self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
-            time.sleep(5)
+            wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
