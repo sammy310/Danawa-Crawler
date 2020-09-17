@@ -4,7 +4,7 @@
 
 크롤링은 GitHub의 Actions를 사용하여 매일 UTP 0시(한국시간으로 9:00 AM)에 실행되도록 설정하였습니다
 
-Actions의 큐 대기시간과 크롤링에 걸리는 시간(약 10분)이 존재해 보통 9시 3~40분에 완료됩니다
+Actions의 큐 대기시간이 존재해 보통 9시 2~30분에 완료됩니다
 
 
 ## [크롤링 데이터](https://github.com/sammy310/Danawa_Crawler/tree/master/crawl_data)
@@ -20,6 +20,8 @@ Actions의 큐 대기시간과 크롤링에 걸리는 시간(약 10분)이 존�
 - [쿨러](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?cooler) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Cooler.csv)
 - [케이스](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?case) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Case.csv)
 - [파워](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?power) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Power.csv)
+
+- [모니터](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?monitor) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Monitor.csv)
 
 
 ---
