@@ -36,6 +36,9 @@ jobs:
         else
           echo 'chromedriver already exist!'
         fi
+    - name: Run Refresher
+      run: |
+        python data_refresher.py
     - name: Run Crawler
       run: |
         scrapy crawl cpucrawler -o cpu_data.csv
