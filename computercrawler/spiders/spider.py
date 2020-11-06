@@ -850,7 +850,7 @@ class Monitor_Spider(scrapy.Spider):
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
             selector = Selector(text=html)
             
-            productIds = selector.xpath('//li[@class="prod_item prod_layer "]/@id').getall()
+            productIds = selector.xpath('//li[@class="prod_item prod_layer width_change"]/@id').getall()
             productNames = selector.xpath('//a[@name="productName"]/text()').getall()
             productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
             
