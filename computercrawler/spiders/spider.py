@@ -158,7 +158,10 @@ class ram_Spider(scrapy.Spider):
             elif i == 0:
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
-                self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
+                if i % 10 == 0:
+                    self.browser.find_element_by_xpath('//a[@class="edge_nav nav_next"]').click()
+                else:
+                    self.browser.find_element_by_xpath('//a[@class="num "][%d]'%(i%10)).click()
             wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
@@ -254,7 +257,10 @@ class vga_Spider(scrapy.Spider):
             elif i == 0:
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
-                self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
+                if i % 10 == 0:
+                    self.browser.find_element_by_xpath('//a[@class="edge_nav nav_next"]').click()
+                else:
+                    self.browser.find_element_by_xpath('//a[@class="num "][%d]'%(i%10)).click()
             wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
         
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
@@ -333,7 +339,10 @@ class mboard_Spider(scrapy.Spider):
             elif i == 0:
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
-                self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
+                if i % 10 == 0:
+                    self.browser.find_element_by_xpath('//a[@class="edge_nav nav_next"]').click()
+                else:
+                    self.browser.find_element_by_xpath('//a[@class="num "][%d]'%(i%10)).click()
             wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
@@ -685,7 +694,10 @@ class cooler_Spider(scrapy.Spider):
             elif i == 0:
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
-                self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
+                if i % 10 == 0:
+                    self.browser.find_element_by_xpath('//a[@class="edge_nav nav_next"]').click()
+                else:
+                    self.browser.find_element_by_xpath('//a[@class="num "][%d]'%(i%10)).click()
             wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
@@ -764,7 +776,10 @@ class Case_Spider(scrapy.Spider):
             elif i == 0:
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
-                self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
+                if i % 10 == 0:
+                    self.browser.find_element_by_xpath('//a[@class="edge_nav nav_next"]').click()
+                else:
+                    self.browser.find_element_by_xpath('//a[@class="num "][%d]'%(i%10)).click()
             wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
@@ -844,7 +859,10 @@ class Monitor_Spider(scrapy.Spider):
             elif i == 0:
                 self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
             elif i > 0:
-                self.browser.find_element_by_xpath('//a[@class="num "][%d]'%i).click()
+                if i % 10 == 0:
+                    self.browser.find_element_by_xpath('//a[@class="edge_nav nav_next"]').click()
+                else:
+                    self.browser.find_element_by_xpath('//a[@class="num "][%d]'%(i%10)).click()
             wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
             
             html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
