@@ -24,7 +24,3 @@ scrapy crawl monitorcrawler -o monitor_data.csv -t csv
 
 python data_sorter.py
 
-
-git add --all
-git commit -m "Auto Update - %date% %time%"
-git push -u origin master
