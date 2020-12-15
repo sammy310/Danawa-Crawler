@@ -8,20 +8,20 @@ Actions의 큐 대기시간이 존재해 보통 9시 2~30분에 완료됩니다
 
 
 ## [크롤링 데이터](https://github.com/sammy310/Danawa_Crawler/tree/master/crawl_data)
-- [CPU](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?cpu) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/CPU.csv)
-- [그래픽카드](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?vga) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/VGA.csv)
+- [CPU](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?data=cpu) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/CPU.csv)
+- [그래픽카드](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?data=vga) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/VGA.csv)
 
-- [마더보드](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?mboard) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/MBoard.csv)
-- [램](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?ram) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/RAM.csv)
+- [마더보드](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?data=mboard) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/MBoard.csv)
+- [램](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?data=ram) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/RAM.csv)
 
-- [SSD](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?ssd) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/SSD.csv)
-- [HDD](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?hdd) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/HDD.csv)
+- [SSD](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?data=ssd) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/SSD.csv)
+- [HDD](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?data=hdd) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/HDD.csv)
 
-- [쿨러](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?cooler) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Cooler.csv)
-- [케이스](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?case) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Case.csv)
-- [파워](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?power) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Power.csv)
+- [쿨러](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?data=cooler) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Cooler.csv)
+- [케이스](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?data=case) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Case.csv)
+- [파워](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?data=power) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Power.csv)
 
-- [모니터](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?monitor) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Monitor.csv)
+- [모니터](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?data=monitor) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Monitor.csv)
 
 
 ---
