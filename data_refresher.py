@@ -17,15 +17,10 @@ dTime = datetime.datetime.today() + datetime.timedelta(hours=9)
 if dTime.day == 1:
     if not os.path.exists(DATA_PATH):
         os.mkdir(DATA_PATH)
-        
-    dateStr = ''
+    
+    dTime -= datetime.timedelta(days=1)
+    dateStr = dTime.strftime('%Y-%m')
     if os.path.exists(DATA_PATH + CSVLIST[0]):
-        with open(DATA_PATH + CSVLIST[0], 'r', newline='', encoding='utf8') as file:
-            dateData = file.readline().split(',')
-            firstData = dateData[2].split(' ')[0]
-            lastData = dateData[-1].split(' ')[0]
-            
-            dateStr = ''.join(firstData.split('-')) + '-' + ''.join(lastData.split('-'))
         
         
         dataFormat = 'Crawl_Data_' + dateStr + '.csv'
