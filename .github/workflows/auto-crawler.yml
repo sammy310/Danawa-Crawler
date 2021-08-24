@@ -36,22 +36,9 @@ jobs:
         else
           echo 'chromedriver already exist!'
         fi
-    - name: Run Refresher
-      run: |
-        python data_refresher.py
     - name: Run Crawler
       run: |
-        scrapy crawl cpucrawler -o cpu_data.csv
-        scrapy crawl vgacrawler -o vga_data.csv
-        scrapy crawl mboardcrawler -o mboard_data.csv
-        scrapy crawl ramcrawler -o ram_data.csv
-        scrapy crawl ssdcrawler -o ssd_data.csv
-        scrapy crawl hddcrawler -o hdd_data.csv
-        scrapy crawl powercrawler -o power_data.csv
-        scrapy crawl coolercrawler -o cooler_data.csv
-        scrapy crawl casecrawler -o case_data.csv
-        scrapy crawl monitorcrawler -o monitor_data.csv
-        python data_sorter.py
+        python Crawler.py
     - name: Commits
       run: |
         git config --local user.email "kipper098@gmail.com"

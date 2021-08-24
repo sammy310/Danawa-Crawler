@@ -1,0 +1,248 @@
+# -*- coding: utf-8 -*-
+
+# danawa_cralwer.py
+# sammy310
+
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+from scrapy.selector import Selector
+
+import datetime
+from datetime import timedelta
+import csv
+import os
+import os.path
+import shutil
+
+
+CRAWLING_DATA_CSV_FILE = 'CrawlingCategory.csv'
+DATA_PATH = 'crawl_data'
+DATA_REFRESH_PATH = f'{DATA_PATH}/Last_Data'
+
+# CHROMEDRIVER_PATH = 'chromedriver_92.exe'
+CHROMEDRIVER_PATH = 'chromedriver'
+
+UTC_TIME = 9
+
+DATA_DIVIDER = '---'
+DATA_REMARK = '//'
+DATA_ROW_DIVIDER = '_'
+DATA_PRODUCT_DIVIDER = '|'
+
+STR_NAME = 'name'
+STR_URL = 'url'
+STR_CRAWLING_PAGE_SIZE = 'crawlingPageSize'
+
+
+class DanawaCrawler:
+    def __init__(self):
+        self.crawlingCategory = list()
+        with open(CRAWLING_DATA_CSV_FILE, 'r', newline='') as file:
+            for crawlingValues in csv.reader(file, skipinitialspace=True):
+                if not crawlingValues[0].startswith(DATA_REMARK):
+                    self.crawlingCategory.append({STR_NAME: crawlingValues[0], STR_URL: crawlingValues[1], STR_CRAWLING_PAGE_SIZE: int(crawlingValues[2])})
+
+    def StartCrawling(self):
+        chrome_option = webdriver.ChromeOptions()
+        chrome_option.add_argument('--headless')
+        chrome_option.add_argument('--window-size=1920,1080')
+        chrome_option.add_argument('--start-maximized')
+        chrome_option.add_argument('--disable-gpu')
+        chrome_option.add_argument('lang=ko=KR')
+
+        self.browser = webdriver.Chrome(CHROMEDRIVER_PATH, chrome_options=chrome_option)
+        self.browser.implicitly_wait(2)
+        
+        for crawlingValue in self.crawlingCategory:
+            crawlingName = crawlingValue[STR_NAME]
+            crawlingURL = crawlingValue[STR_URL]
+            crawlingSize = crawlingValue[STR_CRAWLING_PAGE_SIZE]
+
+            print('Crawling Start : ' + crawlingName)
+
+            # data
+            crawlingFile = open(f'{crawlingName}.csv', 'w', newline='', encoding='utf8')
+            crawlingData_csvWriter = csv.writer(crawlingFile)
+            crawlingData_csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=UTC_TIME)).strftime('%Y-%m-%d %H:%M:%S')])
+
+
+            self.browser.get(crawlingURL)
+
+            self.browser.find_element_by_xpath('//option[@value="90"]').click()
+        
+            wait = WebDriverWait(self.browser,5)
+            wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
+            
+            for i in range(-1, crawlingSize):
+                if i == -1:
+                    self.browser.find_element_by_xpath('//li[@data-sort-method="NEW"]').click()
+                elif i == 0:
+                    self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
+                elif i > 0:
+                    if i % 10 == 0:
+                        self.browser.find_element_by_xpath('//a[@class="edge_nav nav_next"]').click()
+                    else:
+                        self.browser.find_element_by_xpath('//a[@class="num "][%d]'%(i%10)).click()
+                wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
+                
+                html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
+                selector = Selector(text=html)
+                
+                productIds = selector.xpath('//li[@class="prod_item prod_layer "]/@id').getall()
+                if not productIds:
+                    productIds = selector.xpath('//li[@class="prod_item prod_layer width_change"]/@id').getall()
+                productNames = selector.xpath('//a[@name="productName"]/text()').getall()
+                productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
+                
+                adCounter = 0
+                errCounter = 0
+                for j in range(len(productIds)) :
+                    productId = productIds[j][11:]
+                    productName = productNames[j].strip()
+                    productPrice = ''
+                    
+                    bNotAd = False
+                    while not bNotAd:
+                        bMultiProduct = False
+                        productPrice = ''
+
+                        pList = productPriceList[j+adCounter+errCounter].xpath('li')
+                        if pList[0].xpath('@class').get() == "opt_item":
+                            adCounter += 1
+                            bNotAd = False
+                            continue
+                        else:
+                            if not pList[0].xpath('div').get():
+                                errCounter += 1
+                                continue
+                            bNotAd = True
+                        
+                        priceStr = ''
+                        for pStr in pList[0].xpath('div/p/text()').getall():
+                            if bool(pStr.strip()):
+                                priceStr += pStr.strip()
+                        if priceStr:
+                            bMultiProduct = True
+
+                        if bMultiProduct:
+                            for k in range(len(pList)):
+                                for pStr in pList[k].xpath('div/p/text()').getall():
+                                    if bool(pStr.strip()):
+                                        productPrice += pStr.strip()
+                                
+                                if pList[k].xpath('div/p/a/span/text()').get():
+                                    productPrice += DATA_ROW_DIVIDER + pList[k].xpath('div/p/a/span/text()').get()
+                                elif pList[k].xpath('div/p/a/span/em/text()').get():
+                                    productPrice += DATA_ROW_DIVIDER + pList[k].xpath('div/p/a/span/em/text()').get()
+
+                                productPrice += DATA_ROW_DIVIDER
+                                productPrice += pList[k].xpath('p[2]/a/strong/text()').get()
+                                productPrice += DATA_PRODUCT_DIVIDER
+                            
+                            if productPrice[-1] == DATA_PRODUCT_DIVIDER:
+                                productPrice = productPrice[:-1]
+                        else:
+                            productPrice = pList[0].xpath('p[2]/a/strong/text()').get()
+                            if not productPrice:
+                                errCounter += 1
+                                continue
+                            bNotAd = True
+                    
+                    crawlingData_csvWriter.writerow([productId, productName, productPrice])
+            
+            crawlingFile.close()
+
+    def DataSort(self):
+        for crawlingValue in self.crawlingCategory:
+            dataName = crawlingValue[STR_NAME]
+            crawlingDataPath = f'{dataName}.csv'
+
+            if not os.path.exists(crawlingDataPath):
+                continue
+
+            crawl_dataList = list()
+            dataList = list()
+            
+            with open(crawlingDataPath, 'r', newline='', encoding='utf8') as file:
+                csvReader = csv.reader(file)
+                for row in csvReader:
+                    crawl_dataList.append(row)
+            
+            dataPath = f'{DATA_PATH}/{dataName}.csv'
+            if not os.path.exists(dataPath):
+                file = open(dataPath, 'w', encoding='utf8')
+                file.close()
+            with open(dataPath, 'r', newline='', encoding='utf8') as file:
+                csvReader = csv.reader(file)
+                for row in csvReader:
+                    dataList.append(row)
+            
+            
+            if len(dataList) == 0:
+                dataList.append(['Id', 'Name'])
+                
+            dataList[0].append(crawl_dataList[0][0])
+            dataSize = len(dataList[0])
+            
+            for product in crawl_dataList:
+                if not str(product[0]).isdigit():
+                    continue
+                
+                isDataExist = False
+                for data in dataList:
+                    if data[0] == product[0]:
+                        if len(data) < dataSize:
+                            data.append(product[2])
+                        isDataExist = True
+                        break
+                
+                if not isDataExist:
+                    newDataList = ([product[0], product[1]])
+                    for i in range(2,len(dataList[0])-1):
+                        newDataList.append(0)
+                    newDataList.append(product[2])
+                
+                    dataList.append(newDataList)
+                
+            for data in dataList:
+                if len(data) < dataSize:
+                    for i in range(len(data),dataSize):
+                        data.append(0)
+                
+            
+            productData = dataList.pop(0)
+            dataList.sort(key= lambda x: x[1])
+            dataList.insert(0, productData)
+                
+            with open(dataPath, 'w', newline='', encoding='utf8') as file:
+                csvWriter = csv.writer(file)
+                for data in dataList:
+                    csvWriter.writerow(data)
+                file.close()
+                
+            if os.path.isfile(crawlingDataPath):
+                os.remove(crawlingDataPath)
+
+    def DataRefresh(self):
+        dTime = datetime.datetime.today() + datetime.timedelta(hours=UTC_TIME)
+        if dTime.day == 1:
+            if not os.path.exists(DATA_PATH):
+                os.mkdir(DATA_PATH)
+            
+            dTime -= datetime.timedelta(days=1)
+            dateStr = dTime.strftime('%Y-%m')
+
+            dataSavePath = f'{DATA_REFRESH_PATH}/{dateStr}'
+            if not os.path.exists(dataSavePath):
+                os.mkdir(dataSavePath)
+            
+            for file in os.listdir(DATA_PATH):
+                fileName, fileExt = os.path.splitext(file)
+                if fileExt == '.csv':
+                    filePath = f'{DATA_PATH}/{file}'
+                    refreshFilePath = f'{dataSavePath}/{file}'
+                    shutil.move(filePath, refreshFilePath)
