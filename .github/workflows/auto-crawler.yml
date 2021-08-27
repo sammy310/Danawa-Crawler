@@ -38,7 +38,7 @@ jobs:
         fi
     - name: Run Crawler
       run: |
-        python Crawler.py
+        python danawa_crawler.py
     - name: Commits
       run: |
         git config --local user.email "kipper098@gmail.com"

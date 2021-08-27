@@ -18,6 +18,9 @@ import os
 import os.path
 import shutil
 
+from multiprocessing import Pool
+
+PROCESS_COUNT = 2
 
 CRAWLING_DATA_CSV_FILE = 'CrawlingCategory.csv'
 DATA_PATH = 'crawl_data'
@@ -47,114 +50,123 @@ class DanawaCrawler:
                     self.crawlingCategory.append({STR_NAME: crawlingValues[0], STR_URL: crawlingValues[1], STR_CRAWLING_PAGE_SIZE: int(crawlingValues[2])})
 
     def StartCrawling(self):
-        chrome_option = webdriver.ChromeOptions()
-        chrome_option.add_argument('--headless')
-        chrome_option.add_argument('--window-size=1920,1080')
-        chrome_option.add_argument('--start-maximized')
-        chrome_option.add_argument('--disable-gpu')
-        chrome_option.add_argument('lang=ko=KR')
+        self.chrome_option = webdriver.ChromeOptions()
+        self.chrome_option.add_argument('--headless')
+        self.chrome_option.add_argument('--window-size=1920,1080')
+        self.chrome_option.add_argument('--start-maximized')
+        self.chrome_option.add_argument('--disable-gpu')
+        self.chrome_option.add_argument('lang=ko=KR')
 
-        self.browser = webdriver.Chrome(CHROMEDRIVER_PATH, chrome_options=chrome_option)
-        self.browser.implicitly_wait(2)
+        if __name__ == '__main__':
+            pool = Pool(processes=PROCESS_COUNT)
+            pool.map(self.CrawlingCategory, self.crawlingCategory)
+            pool.close()
+            pool.join()
+
+            
+    
+    def CrawlingCategory(self, categoryValue):
+        crawlingName = categoryValue[STR_NAME]
+        crawlingURL = categoryValue[STR_URL]
+        crawlingSize = categoryValue[STR_CRAWLING_PAGE_SIZE]
+
+        print('Crawling Start : ' + crawlingName)
+
+        # data
+        crawlingFile = open(f'{crawlingName}.csv', 'w', newline='', encoding='utf8')
+        crawlingData_csvWriter = csv.writer(crawlingFile)
+        crawlingData_csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=UTC_TIME)).strftime('%Y-%m-%d %H:%M:%S')])
+
+
+        browser = webdriver.Chrome(CHROMEDRIVER_PATH, chrome_options=self.chrome_option)
+        browser.implicitly_wait(2)
+        browser.get(crawlingURL)
+
+        browser.find_element_by_xpath('//option[@value="90"]').click()
+    
+        wait = WebDriverWait(browser,5)
+        wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
         
-        for crawlingValue in self.crawlingCategory:
-            crawlingName = crawlingValue[STR_NAME]
-            crawlingURL = crawlingValue[STR_URL]
-            crawlingSize = crawlingValue[STR_CRAWLING_PAGE_SIZE]
-
-            print('Crawling Start : ' + crawlingName)
-
-            # data
-            crawlingFile = open(f'{crawlingName}.csv', 'w', newline='', encoding='utf8')
-            crawlingData_csvWriter = csv.writer(crawlingFile)
-            crawlingData_csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=UTC_TIME)).strftime('%Y-%m-%d %H:%M:%S')])
-
-
-            self.browser.get(crawlingURL)
-
-            self.browser.find_element_by_xpath('//option[@value="90"]').click()
-        
-            wait = WebDriverWait(self.browser,5)
+        for i in range(-1, crawlingSize):
+            if i == -1:
+                browser.find_element_by_xpath('//li[@data-sort-method="NEW"]').click()
+            elif i == 0:
+                browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
+            elif i > 0:
+                if i % 10 == 0:
+                    browser.find_element_by_xpath('//a[@class="edge_nav nav_next"]').click()
+                else:
+                    browser.find_element_by_xpath('//a[@class="num "][%d]'%(i%10)).click()
             wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
             
-            for i in range(-1, crawlingSize):
-                if i == -1:
-                    self.browser.find_element_by_xpath('//li[@data-sort-method="NEW"]').click()
-                elif i == 0:
-                    self.browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
-                elif i > 0:
-                    if i % 10 == 0:
-                        self.browser.find_element_by_xpath('//a[@class="edge_nav nav_next"]').click()
-                    else:
-                        self.browser.find_element_by_xpath('//a[@class="num "][%d]'%(i%10)).click()
-                wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
-                
-                html = self.browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
-                selector = Selector(text=html)
-                
-                productIds = selector.xpath('//li[@class="prod_item prod_layer "]/@id').getall()
-                if not productIds:
-                    productIds = selector.xpath('//li[@class="prod_item prod_layer width_change"]/@id').getall()
-                productNames = selector.xpath('//a[@name="productName"]/text()').getall()
-                productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
-                
-                adCounter = 0
-                errCounter = 0
-                for j in range(len(productIds)) :
-                    productId = productIds[j][11:]
-                    productName = productNames[j].strip()
-                    productPrice = ''
-                    
-                    bNotAd = False
-                    while not bNotAd:
-                        bMultiProduct = False
-                        productPrice = ''
-
-                        pList = productPriceList[j+adCounter+errCounter].xpath('li')
-                        if pList[0].xpath('@class').get() == "opt_item":
-                            adCounter += 1
-                            bNotAd = False
-                            continue
-                        else:
-                            if not pList[0].xpath('div').get():
-                                errCounter += 1
-                                continue
-                            bNotAd = True
-                        
-                        priceStr = ''
-                        for pStr in pList[0].xpath('div/p/text()').getall():
-                            if bool(pStr.strip()):
-                                priceStr += pStr.strip()
-                        if priceStr:
-                            bMultiProduct = True
-
-                        if bMultiProduct:
-                            for k in range(len(pList)):
-                                for pStr in pList[k].xpath('div/p/text()').getall():
-                                    if bool(pStr.strip()):
-                                        productPrice += pStr.strip()
-                                
-                                if pList[k].xpath('div/p/a/span/text()').get():
-                                    productPrice += DATA_ROW_DIVIDER + pList[k].xpath('div/p/a/span/text()').get()
-                                elif pList[k].xpath('div/p/a/span/em/text()').get():
-                                    productPrice += DATA_ROW_DIVIDER + pList[k].xpath('div/p/a/span/em/text()').get()
-
-                                productPrice += DATA_ROW_DIVIDER
-                                productPrice += pList[k].xpath('p[2]/a/strong/text()').get()
-                                productPrice += DATA_PRODUCT_DIVIDER
-                            
-                            if productPrice[-1] == DATA_PRODUCT_DIVIDER:
-                                productPrice = productPrice[:-1]
-                        else:
-                            productPrice = pList[0].xpath('p[2]/a/strong/text()').get()
-                            if not productPrice:
-                                errCounter += 1
-                                continue
-                            bNotAd = True
-                    
-                    crawlingData_csvWriter.writerow([productId, productName, productPrice])
+            html = browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
+            selector = Selector(text=html)
             
-            crawlingFile.close()
+            productIds = selector.xpath('//li[@class="prod_item prod_layer "]/@id').getall()
+            if not productIds:
+                productIds = selector.xpath('//li[@class="prod_item prod_layer width_change"]/@id').getall()
+            productNames = selector.xpath('//a[@name="productName"]/text()').getall()
+            productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
+            
+            adCounter = 0
+            errCounter = 0
+            for j in range(len(productIds)) :
+                productId = productIds[j][11:]
+                productName = productNames[j].strip()
+                productPrice = ''
+                
+                bNotAd = False
+                while not bNotAd:
+                    bMultiProduct = False
+                    productPrice = ''
+
+                    pList = productPriceList[j+adCounter+errCounter].xpath('li')
+                    if pList[0].xpath('@class').get() == "opt_item":
+                        adCounter += 1
+                        bNotAd = False
+                        continue
+                    else:
+                        if not pList[0].xpath('div').get():
+                            errCounter += 1
+                            continue
+                        bNotAd = True
+                    
+                    priceStr = ''
+                    for pStr in pList[0].xpath('div/p/text()').getall():
+                        if bool(pStr.strip()):
+                            priceStr += pStr.strip()
+                    if priceStr:
+                        bMultiProduct = True
+
+                    if bMultiProduct:
+                        for k in range(len(pList)):
+                            for pStr in pList[k].xpath('div/p/text()').getall():
+                                if bool(pStr.strip()):
+                                    productPrice += pStr.strip()
+                            
+                            if pList[k].xpath('div/p/a/span/text()').get():
+                                productPrice += DATA_ROW_DIVIDER + pList[k].xpath('div/p/a/span/text()').get()
+                            elif pList[k].xpath('div/p/a/span/em/text()').get():
+                                productPrice += DATA_ROW_DIVIDER + pList[k].xpath('div/p/a/span/em/text()').get()
+
+                            productPrice += DATA_ROW_DIVIDER
+                            productPrice += pList[k].xpath('p[2]/a/strong/text()').get()
+                            productPrice += DATA_PRODUCT_DIVIDER
+                        
+                        if productPrice[-1] == DATA_PRODUCT_DIVIDER:
+                            productPrice = productPrice[:-1]
+                    else:
+                        productPrice = pList[0].xpath('p[2]/a/strong/text()').get()
+                        if not productPrice:
+                            errCounter += 1
+                            continue
+                        bNotAd = True
+                
+                crawlingData_csvWriter.writerow([productId, productName, productPrice])
+        
+        crawlingFile.close()
+
+        print('Crawling Finish : ' + crawlingName)
 
     def DataSort(self):
         for crawlingValue in self.crawlingCategory:
@@ -246,3 +258,10 @@ class DanawaCrawler:
                     filePath = f'{DATA_PATH}/{file}'
                     refreshFilePath = f'{dataSavePath}/{file}'
                     shutil.move(filePath, refreshFilePath)
+
+
+if __name__ == '__main__':
+    crawler = DanawaCrawler()
+    crawler.DataRefresh()
+    crawler.StartCrawling()
+    crawler.DataSort()
