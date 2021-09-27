@@ -72,99 +72,102 @@ class DanawaCrawler:
 
         print('Crawling Start : ' + crawlingName)
 
-        # data
-        crawlingFile = open(f'{crawlingName}.csv', 'w', newline='', encoding='utf8')
-        crawlingData_csvWriter = csv.writer(crawlingFile)
-        crawlingData_csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=UTC_TIME)).strftime('%Y-%m-%d %H:%M:%S')])
+        try:
+            # data
+            crawlingFile = open(f'{crawlingName}.csv', 'w', newline='', encoding='utf8')
+            crawlingData_csvWriter = csv.writer(crawlingFile)
+            crawlingData_csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=UTC_TIME)).strftime('%Y-%m-%d %H:%M:%S')])
 
 
-        browser = webdriver.Chrome(CHROMEDRIVER_PATH, chrome_options=self.chrome_option)
-        browser.implicitly_wait(2)
-        browser.get(crawlingURL)
+            browser = webdriver.Chrome(CHROMEDRIVER_PATH, chrome_options=self.chrome_option)
+            browser.implicitly_wait(5)
+            browser.get(crawlingURL)
 
-        browser.find_element_by_xpath('//option[@value="90"]').click()
-    
-        wait = WebDriverWait(browser,5)
-        wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
+            browser.find_element_by_xpath('//option[@value="90"]').click()
         
-        for i in range(-1, crawlingSize):
-            if i == -1:
-                browser.find_element_by_xpath('//li[@data-sort-method="NEW"]').click()
-            elif i == 0:
-                browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
-            elif i > 0:
-                if i % 10 == 0:
-                    browser.find_element_by_xpath('//a[@class="edge_nav nav_next"]').click()
-                else:
-                    browser.find_element_by_xpath('//a[@class="num "][%d]'%(i%10)).click()
+            wait = WebDriverWait(browser, 10)
             wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
             
-            html = browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
-            selector = Selector(text=html)
-            
-            productIds = selector.xpath('//li[@class="prod_item prod_layer "]/@id').getall()
-            if not productIds:
-                productIds = selector.xpath('//li[@class="prod_item prod_layer width_change"]/@id').getall()
-            productNames = selector.xpath('//a[@name="productName"]/text()').getall()
-            productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
-            
-            adCounter = 0
-            errCounter = 0
-            for j in range(len(productIds)) :
-                productId = productIds[j][11:]
-                productName = productNames[j].strip()
-                productPrice = ''
+            for i in range(-1, crawlingSize):
+                if i == -1:
+                    browser.find_element_by_xpath('//li[@data-sort-method="NEW"]').click()
+                elif i == 0:
+                    browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
+                elif i > 0:
+                    if i % 10 == 0:
+                        browser.find_element_by_xpath('//a[@class="edge_nav nav_next"]').click()
+                    else:
+                        browser.find_element_by_xpath('//a[@class="num "][%d]'%(i%10)).click()
+                wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
                 
-                bNotAd = False
-                while not bNotAd:
-                    bMultiProduct = False
+                html = browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
+                selector = Selector(text=html)
+                
+                productIds = selector.xpath('//li[@class="prod_item prod_layer "]/@id').getall()
+                if not productIds:
+                    productIds = selector.xpath('//li[@class="prod_item prod_layer width_change"]/@id').getall()
+                productNames = selector.xpath('//a[@name="productName"]/text()').getall()
+                productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
+                
+                adCounter = 0
+                errCounter = 0
+                for j in range(len(productIds)) :
+                    productId = productIds[j][11:]
+                    productName = productNames[j].strip()
                     productPrice = ''
-
-                    pList = productPriceList[j+adCounter+errCounter].xpath('li')
-                    if pList[0].xpath('@class').get() == "opt_item":
-                        adCounter += 1
-                        bNotAd = False
-                        continue
-                    else:
-                        if not pList[0].xpath('div').get():
-                            errCounter += 1
-                            continue
-                        bNotAd = True
                     
-                    priceStr = ''
-                    for pStr in pList[0].xpath('div/p/text()').getall():
-                        if bool(pStr.strip()):
-                            priceStr += pStr.strip()
-                    if priceStr:
-                        bMultiProduct = True
+                    bNotAd = False
+                    while not bNotAd:
+                        bMultiProduct = False
+                        productPrice = ''
 
-                    if bMultiProduct:
-                        for k in range(len(pList)):
-                            for pStr in pList[k].xpath('div/p/text()').getall():
-                                if bool(pStr.strip()):
-                                    productPrice += pStr.strip()
-                            
-                            if pList[k].xpath('div/p/a/span/text()').get():
-                                productPrice += DATA_ROW_DIVIDER + pList[k].xpath('div/p/a/span/text()').get()
-                            elif pList[k].xpath('div/p/a/span/em/text()').get():
-                                productPrice += DATA_ROW_DIVIDER + pList[k].xpath('div/p/a/span/em/text()').get()
-
-                            productPrice += DATA_ROW_DIVIDER
-                            productPrice += pList[k].xpath('p[2]/a/strong/text()').get()
-                            productPrice += DATA_PRODUCT_DIVIDER
-                        
-                        if productPrice[-1] == DATA_PRODUCT_DIVIDER:
-                            productPrice = productPrice[:-1]
-                    else:
-                        productPrice = pList[0].xpath('p[2]/a/strong/text()').get()
-                        if not productPrice:
-                            errCounter += 1
+                        pList = productPriceList[j+adCounter+errCounter].xpath('li')
+                        if pList[0].xpath('@class').get() == "opt_item":
+                            adCounter += 1
+                            bNotAd = False
                             continue
-                        bNotAd = True
-                
-                crawlingData_csvWriter.writerow([productId, productName, productPrice])
-        
-        crawlingFile.close()
+                        else:
+                            if not pList[0].xpath('div').get():
+                                errCounter += 1
+                                continue
+                            bNotAd = True
+                        
+                        priceStr = ''
+                        for pStr in pList[0].xpath('div/p/text()').getall():
+                            if bool(pStr.strip()):
+                                priceStr += pStr.strip()
+                        if priceStr:
+                            bMultiProduct = True
+
+                        if bMultiProduct:
+                            for k in range(len(pList)):
+                                for pStr in pList[k].xpath('div/p/text()').getall():
+                                    if bool(pStr.strip()):
+                                        productPrice += pStr.strip()
+                                
+                                if pList[k].xpath('div/p/a/span/text()').get():
+                                    productPrice += DATA_ROW_DIVIDER + pList[k].xpath('div/p/a/span/text()').get()
+                                elif pList[k].xpath('div/p/a/span/em/text()').get():
+                                    productPrice += DATA_ROW_DIVIDER + pList[k].xpath('div/p/a/span/em/text()').get()
+
+                                productPrice += DATA_ROW_DIVIDER
+                                productPrice += pList[k].xpath('p[2]/a/strong/text()').get()
+                                productPrice += DATA_PRODUCT_DIVIDER
+                            
+                            if productPrice[-1] == DATA_PRODUCT_DIVIDER:
+                                productPrice = productPrice[:-1]
+                        else:
+                            productPrice = pList[0].xpath('p[2]/a/strong/text()').get()
+                            if not productPrice:
+                                errCounter += 1
+                                continue
+                            bNotAd = True
+                    
+                    crawlingData_csvWriter.writerow([productId, productName, productPrice])
+            
+            crawlingFile.close()
+        except:
+            pass
 
         print('Crawling Finish : ' + crawlingName)
 
