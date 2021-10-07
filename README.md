@@ -4,7 +4,7 @@
 
 크롤링은 GitHub의 Actions를 사용하여 매일 UTP 0시(한국시간으로 9:00 AM)에 실행되도록 설정하였습니다
 
-Actions의 큐 대기시간이 존재해 보통 9시 2~30분에 완료됩니다
+Actions의 큐 대기시간이 존재해 보통 10시 5~15분에 완료됩니다
 
 
 ## [크롤링 데이터](https://github.com/sammy310/Danawa_Crawler/tree/master/crawl_data)
@@ -39,6 +39,6 @@ Actions의 큐 대기시간이 존재해 보통 9시 2~30분에 완료됩니다
 ### 제작에 사용된 것들
 
 - Python : 3.7
-- Scrapy : 2.1.0
+- Scrapy : 2.5.1
 - selenium : 3.141.0
 - Chromedriver : 2.40 (linux 64)
