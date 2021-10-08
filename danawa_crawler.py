@@ -11,8 +11,9 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from scrapy.selector import Selector
 
-import datetime
+from datetime import datetime
 from datetime import timedelta
+from pytz import timezone
 import csv
 import os
 import os.path
@@ -20,16 +21,21 @@ import shutil
 
 from multiprocessing import Pool
 
+from github import Github
+
 PROCESS_COUNT = 2
+
+GITHUB_TOKEN_KEY = 'MY_GITHUB_TOKEN'
+GITHUB_REPOSITORY_NAME = 'sammy310/Danawa-Crawler'
 
 CRAWLING_DATA_CSV_FILE = 'CrawlingCategory.csv'
 DATA_PATH = 'crawl_data'
 DATA_REFRESH_PATH = f'{DATA_PATH}/Last_Data'
 
-# CHROMEDRIVER_PATH = 'chromedriver_92.exe'
-CHROMEDRIVER_PATH = 'chromedriver'
+TIMEZONE = 'Asia/Seoul'
 
-UTC_TIME = 9
+# CHROMEDRIVER_PATH = 'chromedriver_94.exe'
+CHROMEDRIVER_PATH = 'chromedriver'
 
 DATA_DIVIDER = '---'
 DATA_REMARK = '//'
@@ -43,6 +49,7 @@ STR_CRAWLING_PAGE_SIZE = 'crawlingPageSize'
 
 class DanawaCrawler:
     def __init__(self):
+        self.errorList = list()
         self.crawlingCategory = list()
         with open(CRAWLING_DATA_CSV_FILE, 'r', newline='') as file:
             for crawlingValues in csv.reader(file, skipinitialspace=True):
@@ -72,14 +79,13 @@ class DanawaCrawler:
 
         print('Crawling Start : ' + crawlingName)
 
+        # data
+        crawlingFile = open(f'{crawlingName}.csv', 'w', newline='', encoding='utf8')
+        crawlingData_csvWriter = csv.writer(crawlingFile)
+        crawlingData_csvWriter.writerow([self.GetCurrentDate().strftime('%Y-%m-%d %H:%M:%S')])
+        
         try:
-            # data
-            crawlingFile = open(f'{crawlingName}.csv', 'w', newline='', encoding='utf8')
-            crawlingData_csvWriter = csv.writer(crawlingFile)
-            crawlingData_csvWriter.writerow([(datetime.datetime.now() + timedelta(hours=UTC_TIME)).strftime('%Y-%m-%d %H:%M:%S')])
-
-
-            browser = webdriver.Chrome(CHROMEDRIVER_PATH, chrome_options=self.chrome_option)
+            browser = webdriver.Chrome(CHROMEDRIVER_PATH, options=self.chrome_option)
             browser.implicitly_wait(5)
             browser.get(crawlingURL)
 
@@ -107,7 +113,7 @@ class DanawaCrawler:
                 if not productIds:
                     productIds = selector.xpath('//li[@class="prod_item prod_layer width_change"]/@id').getall()
                 productNames = selector.xpath('//a[@name="productName"]/text()').getall()
-                productPriceList = selector.xpath('//div[@class="prod_pricelist"]/ul')
+                productPriceList = selector.xpath('//div[@class="prod_pricelist "]/ul')
                 
                 adCounter = 0
                 errCounter = 0
@@ -165,13 +171,17 @@ class DanawaCrawler:
                     
                     crawlingData_csvWriter.writerow([productId, productName, productPrice])
             
-            crawlingFile.close()
-        except:
-            pass
+        except Exception as e:
+            print('Error - ' + crawlingName + ' - ' + e)
+            self.errorList.append(crawlingName)
+
+        crawlingFile.close()
 
         print('Crawling Finish : ' + crawlingName)
 
     def DataSort(self):
+        print('Data Sort\n')
+
         for crawlingValue in self.crawlingCategory:
             dataName = crawlingValue[STR_NAME]
             crawlingDataPath = f'{dataName}.csv'
@@ -186,6 +196,9 @@ class DanawaCrawler:
                 csvReader = csv.reader(file)
                 for row in csvReader:
                     crawl_dataList.append(row)
+            
+            if len(crawl_dataList) == 0:
+                continue
             
             dataPath = f'{DATA_PATH}/{dataName}.csv'
             if not os.path.exists(dataPath):
@@ -243,12 +256,14 @@ class DanawaCrawler:
                 os.remove(crawlingDataPath)
 
     def DataRefresh(self):
-        dTime = datetime.datetime.today() + datetime.timedelta(hours=UTC_TIME)
+        dTime = self.GetCurrentDate()
         if dTime.day == 1:
+            print('Data Refresh\n')
+
             if not os.path.exists(DATA_PATH):
                 os.mkdir(DATA_PATH)
             
-            dTime -= datetime.timedelta(days=1)
+            dTime -= timedelta(days=1)
             dateStr = dTime.strftime('%Y-%m')
 
             dataSavePath = f'{DATA_REFRESH_PATH}/{dateStr}'
@@ -261,6 +276,23 @@ class DanawaCrawler:
                     filePath = f'{DATA_PATH}/{file}'
                     refreshFilePath = f'{dataSavePath}/{file}'
                     shutil.move(filePath, refreshFilePath)
+    
+    def GetCurrentDate(self):
+        tz = timezone(TIMEZONE)
+        return (datetime.now(tz))
+
+    def CreateIssue(self):
+        if len(self.errorList) > 0:
+            g = Github(os.environ[GITHUB_TOKEN_KEY])
+            repo = g.get_repo(GITHUB_REPOSITORY_NAME)
+            
+            title = f'Crawling Error - ' + self.GetCurrentDate().strftime('%Y-%m-%d')
+            body = ''
+            for err in self.errorList:
+                body += f'- {err}\n'
+            labels = [repo.get_label('bug')]
+            repo.create_issue(title=title, body=body, labels=labels)
+        
 
 
 if __name__ == '__main__':
@@ -268,3 +300,4 @@ if __name__ == '__main__':
     crawler.DataRefresh()
     crawler.StartCrawling()
     crawler.DataSort()
+    crawler.CreateIssue()

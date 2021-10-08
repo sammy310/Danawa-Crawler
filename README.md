@@ -41,4 +41,6 @@ Actions의 큐 대기시간이 존재해 보통 10시 5~15분에 완료됩니다
 - Python : 3.7
 - Scrapy : 2.5.1
 - selenium : 3.141.0
+- PyGithub : 1.51
+- pytz : 2020.1
 - Chromedriver : 2.40 (linux 64)

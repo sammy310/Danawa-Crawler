@@ -39,6 +39,8 @@ jobs:
     - name: Run Crawler
       run: |
         python danawa_crawler.py
+      env:
+        MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
     - name: Commits
       run: |
         git config --local user.email "kipper098@gmail.com"
