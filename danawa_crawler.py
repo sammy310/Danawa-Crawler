@@ -172,7 +172,8 @@ class DanawaCrawler:
                     crawlingData_csvWriter.writerow([productId, productName, productPrice])
             
         except Exception as e:
-            print('Error - ' + crawlingName + ' - ' + e)
+            print('Error - ' + crawlingName + ' ->')
+            print(e)
             self.errorList.append(crawlingName)
 
         crawlingFile.close()
