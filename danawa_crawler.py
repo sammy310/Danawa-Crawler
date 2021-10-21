@@ -108,69 +108,69 @@ class DanawaCrawler:
                 
                 html = browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
                 selector = Selector(text=html)
-                
-                productIds = selector.xpath('//li[@class="prod_item prod_layer "]/@id').getall()
-                if not productIds:
-                    productIds = selector.xpath('//li[@class="prod_item prod_layer width_change"]/@id').getall()
-                productNames = selector.xpath('//a[@name="productName"]/text()').getall()
-                productPriceList = selector.xpath('//div[@class="prod_pricelist "]/ul')
-                
-                adCounter = 0
-                errCounter = 0
-                for j in range(len(productIds)) :
-                    productId = productIds[j][11:]
-                    productName = productNames[j].strip()
-                    productPrice = ''
+
+                # Get Product List
+                products = selector.xpath('//ul[@class="product_list"]/li')[:-1]
+
+                for product in products:
+                    # ad
+                    if 'prod_ad_item' in product.xpath('@class').get().split(' '):
+                        continue
+
+                    productId = product.xpath('@id').get()[11:]
+                    productName = product.xpath('./div/div[2]/p/a/text()').get().strip()
+                    productPrices = product.xpath('./div/div[3]/ul/li')
+                    productPriceStr = ''
+
+                    # Check Mall
+                    isMall = False
+                    if 'prod_top5' in product.xpath('./div/div[3]/@class').get().split(' '):
+                        isMall = True
                     
-                    bNotAd = False
-                    while not bNotAd:
-                        bMultiProduct = False
-                        productPrice = ''
-
-                        pList = productPriceList[j+adCounter+errCounter].xpath('li')
-                        if pList[0].xpath('@class').get() == "opt_item":
-                            adCounter += 1
-                            bNotAd = False
-                            continue
-                        else:
-                            if not pList[0].xpath('div').get():
-                                errCounter += 1
+                    if isMall:
+                        for productPrice in productPrices:
+                            if 'top5_button' in productPrice.xpath('@class').get().split(' '):
                                 continue
-                            bNotAd = True
-                        
-                        priceStr = ''
-                        for pStr in pList[0].xpath('div/p/text()').getall():
-                            if bool(pStr.strip()):
-                                priceStr += pStr.strip()
-                        if priceStr:
-                            bMultiProduct = True
-
-                        if bMultiProduct:
-                            for k in range(len(pList)):
-                                for pStr in pList[k].xpath('div/p/text()').getall():
-                                    if bool(pStr.strip()):
-                                        productPrice += pStr.strip()
-                                
-                                if pList[k].xpath('div/p/a/span/text()').get():
-                                    productPrice += DATA_ROW_DIVIDER + pList[k].xpath('div/p/a/span/text()').get()
-                                elif pList[k].xpath('div/p/a/span/em/text()').get():
-                                    productPrice += DATA_ROW_DIVIDER + pList[k].xpath('div/p/a/span/em/text()').get()
-
-                                productPrice += DATA_ROW_DIVIDER
-                                productPrice += pList[k].xpath('p[2]/a/strong/text()').get()
-                                productPrice += DATA_PRODUCT_DIVIDER
                             
-                            if productPrice[-1] == DATA_PRODUCT_DIVIDER:
-                                productPrice = productPrice[:-1]
-                        else:
-                            productPrice = pList[0].xpath('p[2]/a/strong/text()').get()
-                            if not productPrice:
-                                errCounter += 1
-                                continue
-                            bNotAd = True
+                            if productPriceStr:
+                                productPriceStr += DATA_PRODUCT_DIVIDER
+                            
+                            mallName = productPrice.xpath('./a/div[1]/text()').get().strip()
+                            if not mallName:
+                                mallName = productPrice.xpath('./a/div[1]/span[1]/text()').get().strip()
+                            
+                            price = productPrice.xpath('./a/div[2]/em/text()').get().strip()
+
+                            productPriceStr += f'{mallName}{DATA_ROW_DIVIDER}{price}'
+                    else:
+                        for productPrice in productPrices:
+                            if productPriceStr:
+                                productPriceStr += DATA_PRODUCT_DIVIDER
+                            
+                            # Default
+                            productType = ''
+                            for pType in productPrice.xpath('./div/p/text()').getall():
+                                productType += pType.strip()
+                            
+
+                            # like Ram/HDD/SSD
+                            pricePerMemory = ''
+                            for pType in productPrice.xpath('./div/p/a/span/text()').getall():
+                                pricePerMemory += pType.strip()
+                            if pricePerMemory:
+                                if productType:
+                                    productType += DATA_ROW_DIVIDER
+                                productType += pricePerMemory
+
+                            price = productPrice.xpath('./p[2]/a/strong/text()').get().strip()
+
+                            if productType:
+                                productPriceStr += f'{productType}{DATA_ROW_DIVIDER}{price}'
+                            else:
+                                productPriceStr += f'{price}'
                     
-                    crawlingData_csvWriter.writerow([productId, productName, productPrice])
-            
+                    crawlingData_csvWriter.writerow([productId, productName, productPriceStr])
+
         except Exception as e:
             print('Error - ' + crawlingName + ' ->')
             print(e)
