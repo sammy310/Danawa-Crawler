@@ -8,30 +8,30 @@ Actions의 큐 대기시간이 존재해 보통 10시 5~15분에 완료됩니다
 
 
 ## [크롤링 데이터](https://github.com/sammy310/Danawa_Crawler/tree/master/crawl_data)
-- [CPU](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?category=CPU) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/CPU.csv)
-- [그래픽카드](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?category=VGA) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/VGA.csv)
+- [CPU](https://sammy310.github.io/dev/old/csv_viewer/CSV_Viewer.html?category=CPU) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/CPU.csv)
+- [그래픽카드](https://sammy310.github.io/dev/old/csv_viewer/CSV_Viewer.html?category=VGA) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/VGA.csv)
 
-- [마더보드](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?category=MBoard) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/MBoard.csv)
-- [램](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?category=RAM) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/RAM.csv)
+- [마더보드](https://sammy310.github.io/dev/old/csv_viewer/CSV_Viewer.html?category=MBoard) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/MBoard.csv)
+- [램](https://sammy310.github.io/dev/old/csv_viewer/CSV_Viewer.html?category=RAM) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/RAM.csv)
 
-- [SSD](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?category=SSD) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/SSD.csv)
-- [HDD](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?category=HDD) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/HDD.csv)
+- [SSD](https://sammy310.github.io/dev/old/csv_viewer/CSV_Viewer.html?category=SSD) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/SSD.csv)
+- [HDD](https://sammy310.github.io/dev/old/csv_viewer/CSV_Viewer.html?category=HDD) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/HDD.csv)
 
-- [쿨러](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?category=Cooler) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Cooler.csv)
-- [케이스](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?category=Case) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Case.csv)
-- [파워](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?category=Power) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Power.csv)
+- [쿨러](https://sammy310.github.io/dev/old/csv_viewer/CSV_Viewer.html?category=Cooler) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Cooler.csv)
+- [케이스](https://sammy310.github.io/dev/old/csv_viewer/CSV_Viewer.html?category=Case) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Case.csv)
+- [파워](https://sammy310.github.io/dev/old/csv_viewer/CSV_Viewer.html?category=Power) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Power.csv)
 
-- [모니터](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?category=Monitor) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Monitor.csv)
+- [모니터](https://sammy310.github.io/dev/old/csv_viewer/CSV_Viewer.html?category=Monitor) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Monitor.csv)
 
-- [스피커](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?category=Speaker) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Speaker.csv)
-- [헤드폰](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?category=Headphone) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Headphone.csv)
-- [이어폰](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?category=Earphone) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Earphone.csv)
-- [헤드셋](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?category=Headset) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Headset.csv)
+- [스피커](https://sammy310.github.io/dev/old/csv_viewer/CSV_Viewer.html?category=Speaker) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Speaker.csv)
+- [헤드폰](https://sammy310.github.io/dev/old/csv_viewer/CSV_Viewer.html?category=Headphone) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Headphone.csv)
+- [이어폰](https://sammy310.github.io/dev/old/csv_viewer/CSV_Viewer.html?category=Earphone) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Earphone.csv)
+- [헤드셋](https://sammy310.github.io/dev/old/csv_viewer/CSV_Viewer.html?category=Headset) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Headset.csv)
 
-- [키보드](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?category=Keyboard) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Keyboard.csv)
-- [마우스](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?category=Mouse) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Mouse.csv)
+- [키보드](https://sammy310.github.io/dev/old/csv_viewer/CSV_Viewer.html?category=Keyboard) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Keyboard.csv)
+- [마우스](https://sammy310.github.io/dev/old/csv_viewer/CSV_Viewer.html?category=Mouse) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Mouse.csv)
 
-- [노트북](https://sammy310.github.io/csv_viewer/CSV_Viewer.html?category=Laptop) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Laptop.csv)
+- [노트북](https://sammy310.github.io/dev/old/csv_viewer/CSV_Viewer.html?category=Laptop) / [(데이터 파일)](https://github.com/sammy310/Danawa_Crawler/blob/master/crawl_data/Laptop.csv)
 
 
 ---
