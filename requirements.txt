@@ -1,4 +1,4 @@
-Scrapy==2.5.1
+Scrapy==2.6.0
 selenium==3.141.0
 PyGithub==1.51
 pytz==2020.1
