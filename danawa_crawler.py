@@ -18,6 +18,7 @@ import csv
 import os
 import os.path
 import shutil
+import traceback
 
 from multiprocessing import Pool
 
@@ -173,7 +174,7 @@ class DanawaCrawler:
 
         except Exception as e:
             print('Error - ' + crawlingName + ' ->')
-            print(e)
+            print(traceback.format_exc())
             self.errorList.append(crawlingName)
 
         crawlingFile.close()

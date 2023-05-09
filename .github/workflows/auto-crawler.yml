@@ -30,7 +30,7 @@ jobs:
         if ![ -e 'chromedriver']; then
           echo 'chromedriver not exist!'
           sudo apt-get install google-chrome-stable
-          wget https://chromedriver.storage.googleapis.com/2.40/chromedriver_linux64.zip
+          wget https://chromedriver.storage.googleapis.com/111.0.5563.64/chromedriver_linux64.zip
           unzip ./chromedriver_linux64.zip
           rm -rf ./chromedriver_linux64.zip
         else
