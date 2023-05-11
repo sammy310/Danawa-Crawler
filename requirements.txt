@@ -2,3 +2,4 @@ Scrapy==2.6.2
 selenium==3.141.0
 PyGithub==1.51
 pytz==2020.1
+urllib3<2.0.2
