@@ -9,8 +9,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from scrapy.selector import Selector
-
 from datetime import datetime
 from datetime import timedelta
 from pytz import timezone
@@ -107,40 +105,43 @@ class DanawaCrawler:
                         browser.find_element_by_xpath('//a[@class="num "][%d]'%(i%10)).click()
                 wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
                 
-                html = browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]').get_attribute('outerHTML')
-                selector = Selector(text=html)
-
                 # Get Product List
-                products = selector.xpath('//ul[@class="product_list"]/li')[:-1]
+                productListDiv = browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]')
+                products = productListDiv.find_elements_by_xpath('//ul[@class="product_list"]/li')
 
                 for product in products:
-                    # ad
-                    if 'prod_ad_item' in product.xpath('@class').get().split(' '):
+                    if not product.get_attribute('id'):
                         continue
 
-                    productId = product.xpath('@id').get()[11:]
-                    productName = product.xpath('./div/div[2]/p/a/text()').get().strip()
-                    productPrices = product.xpath('./div/div[3]/ul/li')
+                    # ad
+                    if 'prod_ad_item' in product.get_attribute('class').split(' '):
+                        continue
+                    if product.get_attribute('id').strip().startswith('ad'):
+                        continue
+
+                    productId = product.get_attribute('id')[11:]
+                    productName = product.find_element_by_xpath('./div/div[2]/p/a').text.strip()
+                    productPrices = product.find_elements_by_xpath('./div/div[3]/ul/li')
                     productPriceStr = ''
 
                     # Check Mall
                     isMall = False
-                    if 'prod_top5' in product.xpath('./div/div[3]/@class').get().split(' '):
+                    if 'prod_top5' in product.find_element_by_xpath('./div/div[3]').get_attribute('class').split(' '):
                         isMall = True
                     
                     if isMall:
                         for productPrice in productPrices:
-                            if 'top5_button' in productPrice.xpath('@class').get().split(' '):
+                            if 'top5_button' in productPrice.get_attribute('class').split(' '):
                                 continue
                             
                             if productPriceStr:
                                 productPriceStr += DATA_PRODUCT_DIVIDER
                             
-                            mallName = productPrice.xpath('./a/div[1]/text()').get().strip()
+                            mallName = productPrice.find_element_by_xpath('./a/div[1]').text.strip()
                             if not mallName:
-                                mallName = productPrice.xpath('./a/div[1]/span[1]/text()').get().strip()
+                                mallName = productPrice.find_element_by_xpath('./a/div[1]/span[1]').text.strip()
                             
-                            price = productPrice.xpath('./a/div[2]/em/text()').get().strip()
+                            price = productPrice.find_element_by_xpath('./a/div[2]/em').text.strip()
 
                             productPriceStr += f'{mallName}{DATA_ROW_DIVIDER}{price}'
                     else:
@@ -149,21 +150,13 @@ class DanawaCrawler:
                                 productPriceStr += DATA_PRODUCT_DIVIDER
                             
                             # Default
-                            productType = ''
-                            for pType in productPrice.xpath('./div/p/text()').getall():
-                                productType += pType.strip()
-                            
+                            productType = productPrice.find_element_by_xpath('./div/p').text.strip()
 
                             # like Ram/HDD/SSD
-                            pricePerMemory = ''
-                            for pType in productPrice.xpath('./div/p/a/span/text()').getall():
-                                pricePerMemory += pType.strip()
-                            if pricePerMemory:
-                                if productType:
-                                    productType += DATA_ROW_DIVIDER
-                                productType += pricePerMemory
+                            # HDD : 'WD60EZAZ, 6TB\n25원/1GB_149,000'
+                            productType = productType.replace('\n', DATA_ROW_DIVIDER)
 
-                            price = productPrice.xpath('./p[2]/a/strong/text()').get().strip()
+                            price = productPrice.find_element_by_xpath('./p[2]/a/strong').text.strip()
 
                             if productType:
                                 productPriceStr += f'{productType}{DATA_ROW_DIVIDER}{price}'
