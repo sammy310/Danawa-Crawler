@@ -156,6 +156,15 @@ class DanawaCrawler:
                             # HDD : 'WD60EZAZ, 6TB\n25원/1GB_149,000'
                             productType = productType.replace('\n', DATA_ROW_DIVIDER)
 
+                            # Remove rank text
+                            # 1위, 2위 ...
+                            rankTextElement = productPrice.find_element_by_xpath('./div/p/span')
+                            if rankTextElement:
+                                rankTextClass = rankTextElement.get_attribute('class')
+                                if rankTextClass and rankTextClass == 'rank':
+                                    rankText = rankTextElement.text.strip()
+                                    productType = productType.replace(rankText, '').strip()
+
                             price = productPrice.find_element_by_xpath('./p[2]/a/strong').text.strip()
 
                             if productType:
