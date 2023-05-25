@@ -158,13 +158,8 @@ class DanawaCrawler:
 
                             # Remove rank text
                             # 1위, 2위 ...
-                            rankTextElement = productPrice.find_element_by_xpath('./div/p/span')
-                            if rankTextElement:
-                                rankTextClass = rankTextElement.get_attribute('class')
-                                if rankTextClass and rankTextClass == 'rank':
-                                    rankText = rankTextElement.text.strip()
-                                    productType = productType.replace(rankText, '').strip()
-
+                            productType = self.RemoveRankText(productType)
+                            
                             price = productPrice.find_element_by_xpath('./p[2]/a/strong').text.strip()
 
                             if productType:
@@ -182,6 +177,19 @@ class DanawaCrawler:
         crawlingFile.close()
 
         print('Crawling Finish : ' + crawlingName)
+
+    def RemoveRankText(self, productText):
+        if len(productText) < 2:
+            return productText
+        
+        char1 = productText[0]
+        char2 = productText[1]
+
+        if char1.isdigit() and (1 <= int(char1) and int(char1) <= 9):
+            if char2 == '위':
+                return productText[2:].strip()
+        
+        return productText
 
     def DataSort(self):
         print('Data Sort\n')

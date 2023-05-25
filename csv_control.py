@@ -91,6 +91,43 @@ def LastColumnRankTextDelete():
                 csvWriter.writerow(data)
             file.close()
 
-if __name__ == '__main__':
-    LastColumnRankTextDelete()
+# 가장 마지막 열 데이터 제거
+def LastColumnDelete():
+    print('LastColumnDelete\n')
 
+    # for crawlingValue in [1]:
+        # dataName = 'CPU'
+    for crawlingValue in crawlingCategory:
+        dataName = crawlingValue[STR_NAME]
+
+        dataPath = f'{DATA_PATH}/{dataName}.csv'
+
+        if not os.path.exists(dataPath):
+            continue
+        
+        dataList = list()
+
+        with open(dataPath, 'r', newline='', encoding='utf8') as file:
+            csvReader = csv.reader(file)
+            for row in csvReader:
+                dataList.append(row)
+        
+        
+        if len(dataList) == 0:
+            continue
+
+        # dataSize = len(dataList[0])
+        
+        for i in range(len(dataList)):
+            dataList[i] = dataList[i][:-1]
+
+        with open(dataPath, 'w', newline='', encoding='utf8') as file:
+            csvWriter = csv.writer(file)
+            for data in dataList:
+                csvWriter.writerow(data)
+            file.close()
+
+if __name__ == '__main__':
+    # LastColumnRankTextDelete()
+    # LastColumnDelete()
+    pass
