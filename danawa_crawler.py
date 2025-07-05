@@ -22,19 +22,26 @@ from multiprocessing import Pool
 
 from github import Github
 
+IS_TEST = False
+# IS_TEST = True
+
 PROCESS_COUNT = 2
 
 GITHUB_TOKEN_KEY = 'MY_GITHUB_TOKEN'
 GITHUB_REPOSITORY_NAME = 'sammy310/Danawa-Crawler'
 
 CRAWLING_DATA_CSV_FILE = 'CrawlingCategory.csv'
+if IS_TEST:
+    CRAWLING_DATA_CSV_FILE = 'CrawlingCategory_test.csv'
+
 DATA_PATH = 'crawl_data'
 DATA_REFRESH_PATH = f'{DATA_PATH}/Last_Data'
 
 TIMEZONE = 'Asia/Seoul'
 
-# CHROMEDRIVER_PATH = 'chromedriver_94.exe'
 CHROMEDRIVER_PATH = 'chromedriver'
+if IS_TEST:
+    CHROMEDRIVER_PATH = 'chromedriver_112.exe'
 
 DATA_DIVIDER = '---'
 DATA_REMARK = '//'
@@ -88,26 +95,26 @@ class DanawaCrawler:
             browser.implicitly_wait(5)
             browser.get(crawlingURL)
 
-            browser.find_element_by_xpath('//option[@value="90"]').click()
+            browser.find_element(By.XPATH, '//option[@value="90"]').click()
         
             wait = WebDriverWait(browser, 10)
             wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
             
             for i in range(-1, crawlingSize):
                 if i == -1:
-                    browser.find_element_by_xpath('//li[@data-sort-method="NEW"]').click()
+                    browser.find_element(By.XPATH, '//li[@data-sort-method="NEW"]').click()
                 elif i == 0:
-                    browser.find_element_by_xpath('//li[@data-sort-method="BEST"]').click()
+                    browser.find_element(By.XPATH, '//li[@data-sort-method="BEST"]').click()
                 elif i > 0:
                     if i % 10 == 0:
-                        browser.find_element_by_xpath('//a[@class="edge_nav nav_next"]').click()
+                        browser.find_element(By.XPATH, '//a[@class="edge_nav nav_next"]').click()
                     else:
-                        browser.find_element_by_xpath('//a[@class="num "][%d]'%(i%10)).click()
+                        browser.find_element(By.XPATH, '//a[@class="num "][%d]'%(i%10)).click()
                 wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
                 
                 # Get Product List
-                productListDiv = browser.find_element_by_xpath('//div[@class="main_prodlist main_prodlist_list"]')
-                products = productListDiv.find_elements_by_xpath('//ul[@class="product_list"]/li')
+                productListDiv = browser.find_element(By.XPATH, '//div[@class="main_prodlist main_prodlist_list"]')
+                products = productListDiv.find_elements(By.XPATH, '//ul[@class="product_list"]/li')
 
                 for product in products:
                     if not product.get_attribute('id'):
@@ -120,13 +127,13 @@ class DanawaCrawler:
                         continue
 
                     productId = product.get_attribute('id')[11:]
-                    productName = product.find_element_by_xpath('./div/div[2]/p/a').text.strip()
-                    productPrices = product.find_elements_by_xpath('./div/div[3]/ul/li')
+                    productName = product.find_element(By.XPATH, './div/div[2]/p/a').text.strip()
+                    productPrices = product.find_elements(By.XPATH, './div/div[3]/ul/li')
                     productPriceStr = ''
 
                     # Check Mall
                     isMall = False
-                    if 'prod_top5' in product.find_element_by_xpath('./div/div[3]').get_attribute('class').split(' '):
+                    if 'prod_top5' in product.find_element(By.XPATH, './div/div[3]').get_attribute('class').split(' '):
                         isMall = True
                     
                     if isMall:
@@ -137,11 +144,11 @@ class DanawaCrawler:
                             if productPriceStr:
                                 productPriceStr += DATA_PRODUCT_DIVIDER
                             
-                            mallName = productPrice.find_element_by_xpath('./a/div[1]').text.strip()
+                            mallName = productPrice.find_element_by(By.XPATH, './a/div[1]').text.strip()
                             if not mallName:
-                                mallName = productPrice.find_element_by_xpath('./a/div[1]/span[1]').text.strip()
+                                mallName = productPrice.find_element(By.XPATH, './a/div[1]/span[1]').text.strip()
                             
-                            price = productPrice.find_element_by_xpath('./a/div[2]/em').text.strip()
+                            price = productPrice.find_element(By.XPATH, './a/div[2]/em').text.strip()
 
                             productPriceStr += f'{mallName}{DATA_ROW_DIVIDER}{price}'
                     else:
@@ -150,7 +157,7 @@ class DanawaCrawler:
                                 productPriceStr += DATA_PRODUCT_DIVIDER
                             
                             # Default
-                            productType = productPrice.find_element_by_xpath('./div/p').text.strip()
+                            productType = productPrice.find_element(By.XPATH, './div/p').text.strip()
 
                             # like Ram/HDD/SSD
                             # HDD : 'WD60EZAZ, 6TB\n25원/1GB_149,000'
@@ -160,7 +167,7 @@ class DanawaCrawler:
                             # 1위, 2위 ...
                             productType = self.RemoveRankText(productType)
                             
-                            price = productPrice.find_element_by_xpath('./p[2]/a/strong').text.strip()
+                            price = productPrice.find_element(By.XPATH, './p[2]/a/strong').text.strip()
 
                             if productType:
                                 productPriceStr += f'{productType}{DATA_ROW_DIVIDER}{price}'
