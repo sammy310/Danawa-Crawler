@@ -8,6 +8,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 
 from datetime import datetime
 from datetime import timedelta
@@ -63,12 +64,17 @@ class DanawaCrawler:
                     self.crawlingCategory.append({STR_NAME: crawlingValues[0], STR_URL: crawlingValues[1], STR_CRAWLING_PAGE_SIZE: int(crawlingValues[2])})
 
     def StartCrawling(self):
-        self.chrome_option = webdriver.ChromeOptions()
+        self.chrome_option = Options()
         self.chrome_option.add_argument('--headless')
-        self.chrome_option.add_argument('--window-size=1920,1080')
+        self.chrome_option.add_argument('--window-size=1920x1080')
         self.chrome_option.add_argument('--start-maximized')
         self.chrome_option.add_argument('--disable-gpu')
         self.chrome_option.add_argument('lang=ko=KR')
+        custom_user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
+        self.chrome_option.add_argument(f'user-agent={custom_user_agent}')
+        self.chrome_option.add_argument('--no-sandbox')
+        self.chrome_option.add_argument('--disable-dev-shm-usage')
+
 
         if __name__ == '__main__':
             pool = Pool(processes=PROCESS_COUNT)
@@ -91,7 +97,8 @@ class DanawaCrawler:
         crawlingData_csvWriter.writerow([self.GetCurrentDate().strftime('%Y-%m-%d %H:%M:%S')])
         
         try:
-            browser = webdriver.Chrome(CHROMEDRIVER_PATH, options=self.chrome_option)
+            # browser = webdriver.Chrome(CHROMEDRIVER_PATH, options=self.chrome_option)
+            browser = webdriver.Chrome(options=self.chrome_option)
             browser.implicitly_wait(5)
             browser.get(crawlingURL)
 
