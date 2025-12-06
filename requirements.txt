@@ -1,4 +1,4 @@
 selenium==4.34.1
 PyGithub==2.6.1
 pytz==2025.2
-urllib3==2.5.0
+urllib3==2.6.0
