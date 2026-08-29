@@ -8,6 +8,10 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
+permissions:
+  contents: write
+  issues: write
+
 jobs:
   build:
 
@@ -43,7 +47,7 @@ jobs:
       run: |
         python danawa_crawler.py
       env:
-        MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+        MY_GITHUB_TOKEN: ${{ github.token }}
     - name: Commits
       run: |
         git config --local user.email "kipper098@gmail.com"
@@ -58,7 +62,7 @@ jobs:
       uses: ad-m/github-push-action@master
       with:
         branch: 'master'
-        github_token: ${{ secrets.MY_GITHUB_TOKEN }}
+        github_token: ${{ github.token }}
     - name: Mark crawler failure
       if: steps.crawler.outcome == 'failure'
       run: |

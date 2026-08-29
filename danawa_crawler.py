@@ -111,6 +111,96 @@ class DanawaCrawler:
             element = wait.until(EC.presence_of_element_located((By.XPATH, xpath)))
             browser.execute_script("arguments[0].click();", element)
 
+    def HasVisibleElement(self, browser, xpath):
+        for element in browser.find_elements(By.XPATH, xpath):
+            if element.is_displayed() and element.is_enabled():
+                return True
+        return False
+
+    def GetVisibleProductPages(self, browser):
+        pageXpath = (
+            '//a[contains(concat(" ", normalize-space(@class), " "), " num ")]'
+        )
+        visiblePages = list()
+        for element in browser.find_elements(By.XPATH, pageXpath):
+            if not element.is_displayed():
+                continue
+            pageText = element.text.strip()
+            if pageText.isdigit():
+                visiblePages.append(int(pageText))
+        return sorted(set(visiblePages))
+
+    def GetCurrentProductPage(self, browser):
+        currentPageXpath = (
+            '//a[contains(concat(" ", normalize-space(@class), " "), " num ") '
+            'and contains(concat(" ", normalize-space(@class), " "), " now_on ")]'
+        )
+        wait = WebDriverWait(browser, 10)
+        currentPageElement = wait.until(
+            EC.visibility_of_element_located((By.XPATH, currentPageXpath))
+        )
+        currentPageText = currentPageElement.text.strip()
+        if not currentPageText.isdigit():
+            raise RuntimeError('Could not determine current product page')
+        return int(currentPageText)
+
+    def WaitForCurrentProductPage(self, browser, pageNumber):
+        currentPageXpath = (
+            '//a[contains(concat(" ", normalize-space(@class), " "), " num ") '
+            'and contains(concat(" ", normalize-space(@class), " "), " now_on ") '
+            f'and normalize-space(.)="{pageNumber}"]'
+        )
+        wait = WebDriverWait(browser, 10)
+        wait.until(EC.visibility_of_element_located((By.XPATH, currentPageXpath)))
+
+    def ClickProductPage(self, browser, pageNumber):
+        currentPage = self.GetCurrentProductPage(browser)
+        expectedCurrentPage = pageNumber - 1
+        if currentPage != expectedCurrentPage:
+            raise RuntimeError(
+                f'Unexpected current product page: expected {expectedCurrentPage}, got {currentPage}'
+            )
+
+        pageXpath = (
+            '//a[contains(concat(" ", normalize-space(@class), " "), " num ") '
+            f'and normalize-space(.)="{pageNumber}"]'
+        )
+        if self.HasVisibleElement(browser, pageXpath):
+            self.ClickElement(browser, pageXpath)
+            self.WaitForCurrentProductPage(browser, pageNumber)
+            return True
+
+        nextBlockXpath = (
+            '//a[contains(concat(" ", normalize-space(@class), " "), " edge_nav ") '
+            'and contains(concat(" ", normalize-space(@class), " "), " nav_next ")]'
+        )
+
+        # Page-number groups are displayed in blocks of ten. At 10 -> 11,
+        # 20 -> 21, etc., use the block navigation control when it exists.
+        if pageNumber % 10 == 1:
+            if self.HasVisibleElement(browser, nextBlockXpath):
+                self.ClickElement(browser, nextBlockXpath)
+                self.WaitForCurrentProductPage(browser, pageNumber)
+                return True
+
+        visiblePages = self.GetVisibleProductPages(browser)
+        nextBlockVisible = self.HasVisibleElement(browser, nextBlockXpath)
+
+        # Crawling Page Size is a maximum, but absence alone is not enough to
+        # declare success. Only the actual end of the visible paginator is a
+        # natural category end. A missing interior page remains a crawl error.
+        if (
+            currentPage in visiblePages
+            and max(visiblePages, default=0) == currentPage
+            and not nextBlockVisible
+        ):
+            return False
+
+        raise RuntimeError(
+            f'Expected product page {pageNumber} is unavailable from page {currentPage}; '
+            f'visible pages: {visiblePages}; next block visible: {nextBlockVisible}'
+        )
+
     def CrawlingCategory(self, categoryValue):
         crawlingName = categoryValue[STR_NAME]
         crawlingURL = categoryValue[STR_URL]
@@ -150,10 +240,10 @@ class DanawaCrawler:
                     elif i == 0:
                         self.ClickElement(browser, '//li[@data-sort-method="BEST"]')
                     elif i > 0:
-                        if i % 10 == 0:
-                            self.ClickElement(browser, '//a[@class="edge_nav nav_next"]')
-                        else:
-                            self.ClickElement(browser, '//a[@class="num "][%d]'%(i%10))
+                        targetPage = i + 1
+                        if not self.ClickProductPage(browser, targetPage):
+                            print(f'Crawling Page End : {crawlingName} -> {targetPage - 1} pages')
+                            break
                     wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
 
                     # Get Product List
