@@ -9,6 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import ElementClickInterceptedException
 
 from datetime import datetime
 from datetime import timedelta
@@ -17,6 +18,7 @@ import csv
 import os
 import os.path
 import shutil
+import sys
 import traceback
 
 from multiprocessing import Pool
@@ -57,6 +59,7 @@ STR_CRAWLING_PAGE_SIZE = 'crawlingPageSize'
 class DanawaCrawler:
     def __init__(self):
         self.errorList = list()
+        self.successfulCategoryNames = list()
         self.crawlingCategory = list()
         with open(CRAWLING_DATA_CSV_FILE, 'r', newline='') as file:
             for crawlingValues in csv.reader(file, skipinitialspace=True):
@@ -77,13 +80,37 @@ class DanawaCrawler:
 
 
         if __name__ == '__main__':
-            pool = Pool(processes=PROCESS_COUNT)
-            pool.map(self.CrawlingCategory, self.crawlingCategory)
-            pool.close()
-            pool.join()
+            with Pool(processes=PROCESS_COUNT) as pool:
+                results = pool.map(self.CrawlingCategory, self.crawlingCategory)
 
-            
-    
+            self.errorList = list()
+            self.successfulCategoryNames = list()
+            for crawlingName, errorMessage in results:
+                if errorMessage is None:
+                    self.successfulCategoryNames.append(crawlingName)
+                else:
+                    self.errorList.append(crawlingName)
+
+    def RemoveKnownBlockingOverlays(self, browser):
+        browser.execute_script(
+            "document.querySelectorAll('modal-widget').forEach(element => element.remove());"
+        )
+
+    def ClickElement(self, browser, xpath):
+        wait = WebDriverWait(browser, 10)
+
+        # Danawa can inject a modal-widget over the product list after page load.
+        self.RemoveKnownBlockingOverlays(browser)
+        element = wait.until(EC.element_to_be_clickable((By.XPATH, xpath)))
+
+        try:
+            element.click()
+        except ElementClickInterceptedException:
+            # The widget can be injected again between lookup and click.
+            self.RemoveKnownBlockingOverlays(browser)
+            element = wait.until(EC.presence_of_element_located((By.XPATH, xpath)))
+            browser.execute_script("arguments[0].click();", element)
+
     def CrawlingCategory(self, categoryValue):
         crawlingName = categoryValue[STR_NAME]
         crawlingURL = categoryValue[STR_URL]
@@ -91,106 +118,137 @@ class DanawaCrawler:
 
         print('Crawling Start : ' + crawlingName)
 
-        # data
-        crawlingFile = open(f'{crawlingName}.csv', 'w', newline='', encoding='utf8')
-        crawlingData_csvWriter = csv.writer(crawlingFile)
-        crawlingData_csvWriter.writerow([self.GetCurrentDate().strftime('%Y-%m-%d %H:%M:%S')])
-        
+        crawlingDataPath = f'{crawlingName}.csv'
+        crawlingTempPath = f'{crawlingDataPath}.tmp'
+        browser = None
+        productCount = 0
+
+        # Only a fully completed category crawl may be consumed by DataSort().
+        # Remove leftovers from an interrupted local/re-run before starting.
+        for path in (crawlingDataPath, crawlingTempPath):
+            if os.path.exists(path):
+                os.remove(path)
+
         try:
-            # browser = webdriver.Chrome(CHROMEDRIVER_PATH, options=self.chrome_option)
-            browser = webdriver.Chrome(options=self.chrome_option)
-            browser.implicitly_wait(5)
-            browser.get(crawlingURL)
+            with open(crawlingTempPath, 'w', newline='', encoding='utf8') as crawlingFile:
+                crawlingData_csvWriter = csv.writer(crawlingFile)
+                crawlingData_csvWriter.writerow([self.GetCurrentDate().strftime('%Y-%m-%d %H:%M:%S')])
 
-            browser.find_element(By.XPATH, '//option[@value="90"]').click()
-        
-            wait = WebDriverWait(browser, 10)
-            wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
-            
-            for i in range(-1, crawlingSize):
-                if i == -1:
-                    browser.find_element(By.XPATH, '//li[@data-sort-method="NEW"]').click()
-                elif i == 0:
-                    browser.find_element(By.XPATH, '//li[@data-sort-method="BEST"]').click()
-                elif i > 0:
-                    if i % 10 == 0:
-                        browser.find_element(By.XPATH, '//a[@class="edge_nav nav_next"]').click()
-                    else:
-                        browser.find_element(By.XPATH, '//a[@class="num "][%d]'%(i%10)).click()
+                # browser = webdriver.Chrome(CHROMEDRIVER_PATH, options=self.chrome_option)
+                browser = webdriver.Chrome(options=self.chrome_option)
+                browser.implicitly_wait(5)
+                browser.get(crawlingURL)
+
+                self.ClickElement(browser, '//option[@value="90"]')
+
+                wait = WebDriverWait(browser, 10)
                 wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
-                
-                # Get Product List
-                productListDiv = browser.find_element(By.XPATH, '//div[@class="main_prodlist main_prodlist_list"]')
-                products = productListDiv.find_elements(By.XPATH, '//ul[@class="product_list"]/li')
 
-                for product in products:
-                    if not product.get_attribute('id'):
-                        continue
+                for i in range(-1, crawlingSize):
+                    if i == -1:
+                        self.ClickElement(browser, '//li[@data-sort-method="NEW"]')
+                    elif i == 0:
+                        self.ClickElement(browser, '//li[@data-sort-method="BEST"]')
+                    elif i > 0:
+                        if i % 10 == 0:
+                            self.ClickElement(browser, '//a[@class="edge_nav nav_next"]')
+                        else:
+                            self.ClickElement(browser, '//a[@class="num "][%d]'%(i%10))
+                    wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
 
-                    # ad
-                    if 'prod_ad_item' in product.get_attribute('class').split(' '):
-                        continue
-                    if product.get_attribute('id').strip().startswith('ad'):
-                        continue
+                    # Get Product List
+                    productListDiv = browser.find_element(By.XPATH, '//div[@class="main_prodlist main_prodlist_list"]')
+                    products = productListDiv.find_elements(By.XPATH, '//ul[@class="product_list"]/li')
 
-                    productId = product.get_attribute('id')[11:]
-                    productName = product.find_element(By.XPATH, './div/div[2]/p/a').text.strip()
-                    productPrices = product.find_elements(By.XPATH, './div/div[3]/ul/li')
-                    productPriceStr = ''
+                    for product in products:
+                        if not product.get_attribute('id'):
+                            continue
 
-                    # Check Mall
-                    isMall = False
-                    if 'prod_top5' in product.find_element(By.XPATH, './div/div[3]').get_attribute('class').split(' '):
-                        isMall = True
-                    
-                    if isMall:
-                        for productPrice in productPrices:
-                            if 'top5_button' in productPrice.get_attribute('class').split(' '):
-                                continue
-                            
-                            if productPriceStr:
-                                productPriceStr += DATA_PRODUCT_DIVIDER
-                            
-                            mallName = productPrice.find_element_by(By.XPATH, './a/div[1]').text.strip()
-                            if not mallName:
-                                mallName = productPrice.find_element(By.XPATH, './a/div[1]/span[1]').text.strip()
-                            
-                            price = productPrice.find_element(By.XPATH, './a/div[2]/em').text.strip()
+                        # ad
+                        if 'prod_ad_item' in product.get_attribute('class').split(' '):
+                            continue
+                        if product.get_attribute('id').strip().startswith('ad'):
+                            continue
 
-                            productPriceStr += f'{mallName}{DATA_ROW_DIVIDER}{price}'
-                    else:
-                        for productPrice in productPrices:
-                            if productPriceStr:
-                                productPriceStr += DATA_PRODUCT_DIVIDER
-                            
-                            # Default
-                            productType = productPrice.find_element(By.XPATH, './div/p').text.strip()
+                        productId = product.get_attribute('id')[11:]
+                        productName = product.find_element(By.XPATH, './div/div[2]/p/a').text.strip()
+                        productPrices = product.find_elements(By.XPATH, './div/div[3]/ul/li')
+                        productPriceStr = ''
 
-                            # like Ram/HDD/SSD
-                            # HDD : 'WD60EZAZ, 6TB\n25원/1GB_149,000'
-                            productType = productType.replace('\n', DATA_ROW_DIVIDER)
+                        # Check Mall
+                        isMall = False
+                        if 'prod_top5' in product.find_element(By.XPATH, './div/div[3]').get_attribute('class').split(' '):
+                            isMall = True
 
-                            # Remove rank text
-                            # 1위, 2위 ...
-                            productType = self.RemoveRankText(productType)
-                            
-                            price = productPrice.find_element(By.XPATH, './p[2]/a/strong').text.strip()
+                        if isMall:
+                            for productPrice in productPrices:
+                                if 'top5_button' in productPrice.get_attribute('class').split(' '):
+                                    continue
 
-                            if productType:
-                                productPriceStr += f'{productType}{DATA_ROW_DIVIDER}{price}'
-                            else:
-                                productPriceStr += f'{price}'
-                    
-                    crawlingData_csvWriter.writerow([productId, productName, productPriceStr])
+                                if productPriceStr:
+                                    productPriceStr += DATA_PRODUCT_DIVIDER
 
-        except Exception as e:
+                                mallName = productPrice.find_element(By.XPATH, './a/div[1]').text.strip()
+                                if not mallName:
+                                    mallName = productPrice.find_element(By.XPATH, './a/div[1]/span[1]').text.strip()
+
+                                price = productPrice.find_element(By.XPATH, './a/div[2]/em').text.strip()
+
+                                productPriceStr += f'{mallName}{DATA_ROW_DIVIDER}{price}'
+                        else:
+                            for productPrice in productPrices:
+                                if productPriceStr:
+                                    productPriceStr += DATA_PRODUCT_DIVIDER
+
+                                # Default
+                                productType = productPrice.find_element(By.XPATH, './div/p').text.strip()
+
+                                # like Ram/HDD/SSD
+                                # HDD : 'WD60EZAZ, 6TB\n25원/1GB_149,000'
+                                productType = productType.replace('\n', DATA_ROW_DIVIDER)
+
+                                # Remove rank text
+                                # 1위, 2위 ...
+                                productType = self.RemoveRankText(productType)
+
+                                price = productPrice.find_element(By.XPATH, './p[2]/a/strong').text.strip()
+
+                                if productType:
+                                    productPriceStr += f'{productType}{DATA_ROW_DIVIDER}{price}'
+                                else:
+                                    productPriceStr += f'{price}'
+
+                        crawlingData_csvWriter.writerow([productId, productName, productPriceStr])
+                        productCount += 1
+
+            # A DOM change can yield no recognized products without raising Selenium errors.
+            if productCount == 0:
+                raise RuntimeError(f'No products crawled: {crawlingName}')
+
+            # Atomic promotion: DataSort() only sees a complete category crawl.
+            os.replace(crawlingTempPath, crawlingDataPath)
+
+        except Exception:
+            errorMessage = traceback.format_exc()
             print('Error - ' + crawlingName + ' ->')
-            print(traceback.format_exc())
-            self.errorList.append(crawlingName)
+            print(errorMessage)
 
-        crawlingFile.close()
+            for path in (crawlingTempPath, crawlingDataPath):
+                if os.path.exists(path):
+                    os.remove(path)
+
+            return crawlingName, errorMessage
+
+        finally:
+            if browser is not None:
+                try:
+                    browser.quit()
+                except Exception:
+                    print('Browser cleanup failed - ' + crawlingName + ' ->')
+                    print(traceback.format_exc())
 
         print('Crawling Finish : ' + crawlingName)
+        return crawlingName, None
 
     def RemoveRankText(self, productText):
         if len(productText) < 2:
@@ -208,8 +266,15 @@ class DanawaCrawler:
     def DataSort(self):
         print('Data Sort\n')
 
+        successfulCategories = set(self.successfulCategoryNames)
+
         for crawlingValue in self.crawlingCategory:
             dataName = crawlingValue[STR_NAME]
+
+            if dataName not in successfulCategories:
+                print('Data Sort Skip - ' + dataName + ' (crawl failed)')
+                continue
+
             crawlingDataPath = f'{dataName}.csv'
 
             if not os.path.exists(crawlingDataPath):
@@ -327,3 +392,6 @@ if __name__ == '__main__':
     crawler.StartCrawling()
     crawler.DataSort()
     crawler.CreateIssue()
+
+    if crawler.errorList:
+        sys.exit(1)

@@ -38,6 +38,8 @@ jobs:
           echo 'chromedriver already exist!'
         fi
     - name: Run Crawler
+      id: crawler
+      continue-on-error: true
       run: |
         python danawa_crawler.py
       env:
@@ -47,10 +49,18 @@ jobs:
         git config --local user.email "kipper098@gmail.com"
         git config --local user.name "Auto_Crawler_Bot"
         git add --all
-        git commit -m "Bot - Auto Crawl | $(date -d '+9 hour' +'%Y-%m-%d %H:%M:%S')"
+        if git diff --cached --quiet; then
+          echo "No crawl data changes to commit"
+        else
+          git commit -m "Bot - Auto Crawl | $(date -d '+9 hour' +'%Y-%m-%d %H:%M:%S')"
+        fi
     - name: Push
       uses: ad-m/github-push-action@master
       with:
         branch: 'master'
         github_token: ${{ secrets.MY_GITHUB_TOKEN }}
-        
+    - name: Mark crawler failure
+      if: steps.crawler.outcome == 'failure'
+      run: |
+        echo "One or more crawl categories failed."
+        exit 1
