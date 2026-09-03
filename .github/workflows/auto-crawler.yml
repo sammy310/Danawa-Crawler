@@ -30,17 +30,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Install Chromdriver
-      run: |
-        if ![ -e 'chromedriver']; then
-          echo 'chromedriver not exist!'
-          sudo apt-get install google-chrome-stable
-          wget https://chromedriver.storage.googleapis.com/111.0.5563.64/chromedriver_linux64.zip
-          unzip ./chromedriver_linux64.zip
-          rm -rf ./chromedriver_linux64.zip
-        else
-          echo 'chromedriver already exist!'
-        fi
     - name: Run Crawler
       id: crawler
       continue-on-error: true

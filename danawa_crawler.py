@@ -9,7 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import ElementClickInterceptedException
+from selenium.common.exceptions import ElementClickInterceptedException, TimeoutException
 
 from datetime import datetime
 from datetime import timedelta
@@ -19,6 +19,7 @@ import os
 import os.path
 import shutil
 import sys
+import time
 import traceback
 
 from multiprocessing import Pool
@@ -29,6 +30,10 @@ IS_TEST = False
 # IS_TEST = True
 
 PROCESS_COUNT = 2
+
+CATEGORY_READY_ATTEMPTS = 4
+CATEGORY_READY_TIMEOUT = 15
+CATEGORY_READY_RETRY_DELAY = 3
 
 GITHUB_TOKEN_KEY = 'MY_GITHUB_TOKEN'
 GITHUB_REPOSITORY_NAME = 'sammy310/Danawa-Crawler'
@@ -110,6 +115,120 @@ class DanawaCrawler:
             self.RemoveKnownBlockingOverlays(browser)
             element = wait.until(EC.presence_of_element_located((By.XPATH, xpath)))
             browser.execute_script("arguments[0].click();", element)
+
+    def GetCategoryReadinessState(self, browser):
+        newXpath = '//li[@data-sort-method="NEW"]'
+        bestXpath = '//li[@data-sort-method="BEST"]'
+        option90Xpath = '//option[@value="90"]'
+        productXpath = '//ul[@class="product_list"]/li[@id]'
+
+        return {
+            'title': browser.title,
+            'ready': browser.execute_script('return document.readyState'),
+            'new': len(browser.find_elements(By.XPATH, newXpath)),
+            'best': len(browser.find_elements(By.XPATH, bestXpath)),
+            'option90': len(browser.find_elements(By.XPATH, option90Xpath)),
+            'products': len(browser.find_elements(By.XPATH, productXpath)),
+        }
+
+    def WaitForCategoryReady(self, browser, stage):
+        def readiness(driver):
+            state = self.GetCategoryReadinessState(driver)
+            if (
+                state['ready'] == 'complete'
+                and state['new'] > 0
+                and state['best'] > 0
+                and state['option90'] > 0
+                and state['products'] > 0
+            ):
+                return state
+            return False
+
+        try:
+            return WebDriverWait(
+                browser,
+                CATEGORY_READY_TIMEOUT,
+                poll_frequency=0.5,
+            ).until(readiness)
+        except TimeoutException:
+            state = self.GetCategoryReadinessState(browser)
+            raise RuntimeError(
+                f'Category page readiness timeout ({stage}): {state}'
+            ) from None
+
+    def PrepareCategoryBrowser(self, crawlingName, crawlingURL):
+        lastError = None
+
+        for attempt in range(1, CATEGORY_READY_ATTEMPTS + 1):
+            browser = None
+
+            try:
+                browser = webdriver.Chrome(options=self.chrome_option)
+
+                # Readiness polling uses find_elements(), so disable implicit
+                # waits here to keep each readiness snapshot bounded.
+                browser.implicitly_wait(0)
+                browser.get(crawlingURL)
+
+                self.WaitForCategoryReady(browser, 'initial')
+
+                self.ClickElement(browser, '//option[@value="90"]')
+
+                wait = WebDriverWait(browser, 10)
+                wait.until(
+                    EC.invisibility_of_element(
+                        (By.CLASS_NAME, 'product_list_cover')
+                    )
+                )
+
+                # Danawa can occasionally return only the category shell.
+                # Verify usable sort/product UI again after the 90-item refresh.
+                self.WaitForCategoryReady(browser, 'after 90')
+
+                browser.implicitly_wait(5)
+
+                if attempt > 1:
+                    print(
+                        f'Category readiness recovered : {crawlingName} '
+                        f'-> attempt {attempt}/{CATEGORY_READY_ATTEMPTS}'
+                    )
+
+                return browser
+
+            except Exception as error:
+                lastError = error
+
+                state = None
+                if browser is not None:
+                    try:
+                        state = self.GetCategoryReadinessState(browser)
+                    except Exception:
+                        state = {'snapshot': 'unavailable'}
+
+                print(
+                    f'Category readiness failed : {crawlingName} '
+                    f'-> attempt {attempt}/{CATEGORY_READY_ATTEMPTS}'
+                )
+                print(f'Readiness error : {error}')
+                print(f'Readiness state : {state}')
+
+                if browser is not None:
+                    try:
+                        browser.quit()
+                    except Exception:
+                        print(
+                            'Browser cleanup failed during readiness retry '
+                            f'- {crawlingName} ->'
+                        )
+                        print(traceback.format_exc())
+
+                if attempt < CATEGORY_READY_ATTEMPTS:
+                    time.sleep(CATEGORY_READY_RETRY_DELAY * attempt)
+
+        raise RuntimeError(
+            f'Category page readiness failed after '
+            f'{CATEGORY_READY_ATTEMPTS} attempts: {crawlingName}: {lastError}'
+        ) from lastError
 
     def HasVisibleElement(self, browser, xpath):
         for element in browser.find_elements(By.XPATH, xpath):
@@ -224,15 +343,8 @@ class DanawaCrawler:
                 crawlingData_csvWriter = csv.writer(crawlingFile)
                 crawlingData_csvWriter.writerow([self.GetCurrentDate().strftime('%Y-%m-%d %H:%M:%S')])
 
-                # browser = webdriver.Chrome(CHROMEDRIVER_PATH, options=self.chrome_option)
-                browser = webdriver.Chrome(options=self.chrome_option)
-                browser.implicitly_wait(5)
-                browser.get(crawlingURL)
-
-                self.ClickElement(browser, '//option[@value="90"]')
-
+                browser = self.PrepareCategoryBrowser(crawlingName, crawlingURL)
                 wait = WebDriverWait(browser, 10)
-                wait.until(EC.invisibility_of_element((By.CLASS_NAME, 'product_list_cover')))
 
                 for i in range(-1, crawlingSize):
                     if i == -1:
