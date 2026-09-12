@@ -26,6 +26,8 @@ from multiprocessing import Pool
 
 from github import Github
 
+from danawa_http import DanawaHttpClient
+
 IS_TEST = False
 # IS_TEST = True
 
@@ -86,7 +88,7 @@ class DanawaCrawler:
 
         if __name__ == '__main__':
             with Pool(processes=PROCESS_COUNT) as pool:
-                results = pool.map(self.CrawlingCategory, self.crawlingCategory)
+                results = pool.map(self.CrawlingCategoryHttp, self.crawlingCategory)
 
             self.errorList = list()
             self.successfulCategoryNames = list()
@@ -319,6 +321,117 @@ class DanawaCrawler:
             f'Expected product page {pageNumber} is unavailable from page {currentPage}; '
             f'visible pages: {visiblePages}; next block visible: {nextBlockVisible}'
         )
+
+    def CrawlingCategoryHttp(self, categoryValue):
+        crawlingName = categoryValue[STR_NAME]
+        crawlingURL = categoryValue[STR_URL]
+        crawlingSize = categoryValue[STR_CRAWLING_PAGE_SIZE]
+
+        print('Crawling Start : ' + crawlingName)
+
+        crawlingDataPath = f'{crawlingName}.csv'
+        crawlingTempPath = f'{crawlingDataPath}.tmp'
+        productCount = 0
+
+        # Preserve the Issue #7 atomic-category rule: only a fully completed
+        # category crawl may be consumed by DataSort().
+        for path in (crawlingDataPath, crawlingTempPath):
+            if os.path.exists(path):
+                os.remove(path)
+
+        try:
+            httpClient = DanawaHttpClient()
+            bootstrap = httpClient.FetchBootstrap(crawlingName, crawlingURL)
+
+            with open(
+                crawlingTempPath,
+                'w',
+                newline='',
+                encoding='utf8',
+            ) as crawlingFile:
+                crawlingData_csvWriter = csv.writer(crawlingFile)
+                crawlingData_csvWriter.writerow(
+                    [self.GetCurrentDate().strftime('%Y-%m-%d %H:%M:%S')]
+                )
+
+                # Preserve historical ordering semantics: NEW page 1 first,
+                # then BEST page 1..configured maximum. DataSort() therefore
+                # continues to give the NEW observation precedence when the
+                # same product appears in both result sets.
+                newProducts = httpClient.FetchProductPage(
+                    crawlingName,
+                    crawlingURL,
+                    bootstrap,
+                    'NEW',
+                    1,
+                    False,
+                )
+
+                for product in newProducts:
+                    crawlingData_csvWriter.writerow(
+                        [
+                            product.productId,
+                            product.productName,
+                            httpClient.FormatProductPrice(
+                                product,
+                                self.RemoveRankText,
+                                DATA_ROW_DIVIDER,
+                                DATA_PRODUCT_DIVIDER,
+                            ),
+                        ]
+                    )
+                    productCount += 1
+
+                for pageNumber in range(1, crawlingSize + 1):
+                    products = httpClient.FetchProductPage(
+                        crawlingName,
+                        crawlingURL,
+                        bootstrap,
+                        'BEST',
+                        pageNumber,
+                        pageNumber > 1,
+                    )
+
+                    if not products:
+                        print(
+                            f'Crawling Page End : {crawlingName} '
+                            f'-> {pageNumber - 1} pages'
+                        )
+                        break
+
+                    for product in products:
+                        crawlingData_csvWriter.writerow(
+                            [
+                                product.productId,
+                                product.productName,
+                                httpClient.FormatProductPrice(
+                                    product,
+                                    self.RemoveRankText,
+                                    DATA_ROW_DIVIDER,
+                                    DATA_PRODUCT_DIVIDER,
+                                ),
+                            ]
+                        )
+                        productCount += 1
+
+            if productCount == 0:
+                raise RuntimeError(f'No products crawled: {crawlingName}')
+
+            os.replace(crawlingTempPath, crawlingDataPath)
+
+        except Exception:
+            errorMessage = traceback.format_exc()
+            print('Error - ' + crawlingName + ' ->')
+            print(errorMessage)
+
+            for path in (crawlingTempPath, crawlingDataPath):
+                if os.path.exists(path):
+                    os.remove(path)
+
+            return crawlingName, errorMessage
+
+        print('Crawling Finish : ' + crawlingName)
+        return crawlingName, None
 
     def CrawlingCategory(self, categoryValue):
         crawlingName = categoryValue[STR_NAME]

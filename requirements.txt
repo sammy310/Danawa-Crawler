@@ -2,3 +2,5 @@ selenium==4.38
 PyGithub==2.6.1
 pytz==2025.2
 urllib3==2.7.0
+requests==2.34.2
+beautifulsoup4==4.15.0
