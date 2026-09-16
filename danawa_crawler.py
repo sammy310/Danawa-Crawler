@@ -26,7 +26,7 @@ from multiprocessing import Pool
 
 from github import Github
 
-from danawa_http import DanawaHttpClient
+from danawa_http_static import DanawaStaticHttpClient
 
 IS_TEST = False
 # IS_TEST = True
@@ -340,8 +340,11 @@ class DanawaCrawler:
                 os.remove(path)
 
         try:
-            httpClient = DanawaHttpClient()
-            bootstrap = httpClient.FetchBootstrap(crawlingName, crawlingURL)
+            httpClient = DanawaStaticHttpClient()
+            staticFields = httpClient.GetStaticProductListFields(
+                crawlingName,
+                crawlingURL,
+            )
 
             with open(
                 crawlingTempPath,
@@ -358,16 +361,15 @@ class DanawaCrawler:
                 # then BEST page 1..configured maximum. DataSort() therefore
                 # continues to give the NEW observation precedence when the
                 # same product appears in both result sets.
-                newProducts = httpClient.FetchProductPage(
+                newPage = httpClient.FetchProductPage(
                     crawlingName,
                     crawlingURL,
-                    bootstrap,
+                    staticFields,
                     'NEW',
                     1,
-                    False,
                 )
 
-                for product in newProducts:
+                for product in newPage.products:
                     crawlingData_csvWriter.writerow(
                         [
                             product.productId,
@@ -382,24 +384,60 @@ class DanawaCrawler:
                     )
                     productCount += 1
 
-                for pageNumber in range(1, crawlingSize + 1):
-                    products = httpClient.FetchProductPage(
-                        crawlingName,
-                        crawlingURL,
-                        bootstrap,
-                        'BEST',
-                        pageNumber,
-                        pageNumber > 1,
+                bestPage = httpClient.FetchProductPage(
+                    crawlingName,
+                    crawlingURL,
+                    staticFields,
+                    'BEST',
+                    1,
+                    requireTotalProductCount=True,
+                )
+
+                if bestPage.totalProductCount is None:
+                    raise RuntimeError(
+                        f'BEST page authority missing: {crawlingName}'
                     )
 
-                    if not products:
-                        print(
-                            f'Crawling Page End : {crawlingName} '
-                            f'-> {pageNumber - 1} pages'
-                        )
-                        break
+                expectedBestPageCount = httpClient.GetExpectedBestPageCount(
+                    bestPage.totalProductCount
+                )
+                bestPageCount = min(
+                    crawlingSize,
+                    expectedBestPageCount,
+                )
 
-                    for product in products:
+                print(
+                    f'HTTP BEST authority : {crawlingName} '
+                    f'-> total products {bestPage.totalProductCount}, '
+                    f'total pages {expectedBestPageCount}, '
+                    f'configured cap {crawlingSize}'
+                )
+
+                for product in bestPage.products:
+                    crawlingData_csvWriter.writerow(
+                        [
+                            product.productId,
+                            product.productName,
+                            httpClient.FormatProductPrice(
+                                product,
+                                self.RemoveRankText,
+                                DATA_ROW_DIVIDER,
+                                DATA_PRODUCT_DIVIDER,
+                            ),
+                        ]
+                    )
+                    productCount += 1
+
+                for pageNumber in range(2, bestPageCount + 1):
+                    page = httpClient.FetchProductPage(
+                        crawlingName,
+                        crawlingURL,
+                        staticFields,
+                        'BEST',
+                        pageNumber,
+                    )
+
+                    for product in page.products:
                         crawlingData_csvWriter.writerow(
                             [
                                 product.productId,
@@ -413,6 +451,12 @@ class DanawaCrawler:
                             ]
                         )
                         productCount += 1
+
+                if expectedBestPageCount < crawlingSize:
+                    print(
+                        f'Crawling Page End : {crawlingName} '
+                        f'-> {expectedBestPageCount} pages'
+                    )
 
             if productCount == 0:
                 raise RuntimeError(f'No products crawled: {crawlingName}')
