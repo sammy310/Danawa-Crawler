@@ -16,6 +16,10 @@ from danawa_http_static import (
 class FakeResponse:
     def __init__(self, text):
         self.text = text
+        self.url = 'https://prod.danawa.com/list/ajax/getProductList.ajax.php'
+        self.status_code = 200
+        self.headers = {'Content-Type': 'text/html'}
+        self.content = text.encode('utf-8')
 
     def raise_for_status(self):
         return None

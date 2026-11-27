@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 import re
 import time
+from urllib.parse import urlsplit
 
 from bs4 import BeautifulSoup
 
@@ -15,6 +16,10 @@ from danawa_http import (
     PRODUCT_REQUEST_RETRY_DELAY_SECONDS,
     PRODUCT_REQUEST_TIMEOUT_SECONDS,
 )
+
+
+class DanawaServiceUnavailable(RuntimeError):
+    """The request reached Danawa's explicit service interruption notice."""
 
 
 @dataclass(frozen=True)
@@ -121,12 +126,20 @@ class DanawaStaticHttpClient(DanawaHttpClient):
                 }
             )
 
+            response = None
             try:
                 response = session.post(
                     PRODUCT_LIST_ENDPOINT,
                     data=fields,
                     timeout=PRODUCT_REQUEST_TIMEOUT_SECONDS,
                 )
+                finalHost = urlsplit(response.url).hostname
+                if finalHost == 'construction.danawa.com':
+                    raise DanawaServiceUnavailable(
+                        f'Danawa service unavailable: {finalHost} '
+                        f'(HTTP {response.status_code}); '
+                        f'{crawlingName} -> {sortMethod} page {pageNumber}'
+                    )
                 response.raise_for_status()
 
                 page = self.ParseProductPageHtml(
@@ -143,6 +156,10 @@ class DanawaStaticHttpClient(DanawaHttpClient):
 
                 return page
 
+            except DanawaServiceUnavailable:
+                # Retrying an explicit service interruption notice cannot
+                # produce a valid product list. Preserve the category data.
+                raise
             except Exception as error:
                 lastError = error
                 print(
@@ -150,6 +167,14 @@ class DanawaStaticHttpClient(DanawaHttpClient):
                     f'-> {sortMethod} page {pageNumber}, '
                     f'attempt {attempt}/{PRODUCT_REQUEST_ATTEMPTS}: {error}'
                 )
+
+                if response is not None:
+                    print(
+                        f'HTTP response metadata : status={response.status_code}, '
+                        f'host={urlsplit(response.url).hostname}, '
+                        f'content-type={response.headers.get("Content-Type", "unknown")!r}, '
+                        f'bytes={len(response.content)}'
+                    )
 
             finally:
                 session.close()
